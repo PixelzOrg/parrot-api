@@ -7,9 +7,13 @@ from setuptools import setup
 setup(
     name="typhoon",
     packages=[
-        "app",
+        "app.api",
+        "app.db",
+        "app.models",
+        "app.services",
         "app.routes",
         "app.utils",
+        "app.src",
     ],
     install_requires=[
         "flask",

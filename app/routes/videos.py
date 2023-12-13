@@ -1,13 +1,11 @@
 import os
 from werkzeug.utils import secure_filename
 from flask import Blueprint, jsonify, request, send_file
-from app.src.facial_recognition import extract_faces
 from app.src.transcribe import transcribe_file
-from app.src.vision import analyze_video
 from app.utils.files import allowed_file
 from app.utils.videos import video_to_img
 
-videos = Blueprint('videos', __name__)
+videos = Blueprint('users/videos', __name__)
 
 @videos.route('/upload', methods=['POST'])
 def upload_video():
@@ -53,35 +51,29 @@ def upload_video():
     except Exception as e:
         return jsonify({'error': f'{e}'}), 500
 
-@videos.route('/names', methods=['GET'])
-def get_all_video_names():
+@videos.route('/<username>/by-date/<date>', methods=['GET'])
+def fetch_video_by_date(username: str, date: str):
     """
-    Iterates through the data/videos folder and returns a list of all the video names
-
-    Returns:
-        dict: a JSON response with a list of all the video names
-    """
-    try: 
-        video_files = [f for f in os.listdir("app/data/videos/")]
-        return jsonify({'videos': video_files})
-    except Exception as e:
-        return jsonify({'message': f'Error reading from directory "app/data/videos/"', 'error': f'{e}'}), 500
-
-
-@videos.route('/<filename>', methods=['GET'])
-def get_video_file(filename):
-    """
-    Returns a video file from the data/videos folder
+    Fetches a video from our database based on date
 
     params:
-        filename: the name of the video file to return
-
+        username (str): the username of the user
+        date (str): the date of the video
+    
     Returns:
-        file: mp4 video file
+        A JSON response with the video   
     """
-    video_path = os.path.join("app/data/videos/", filename)
+    pass
 
-    try:
-        return send_file(video_path, mimetype='video/mp4')
-    except Exception as e:
-        return jsonify({'message': f'File {filename} not found', 'error': f'{e}'}), 404
+@videos.route('/<username>/', methods=['GET'])
+def fetch_all_videos(username: str):
+    """
+    Fetches all videos from our database based on a username
+
+    params:
+        username (str): the username of the user
+    
+    Returns:
+        A JSON response with all the videos   
+    """
+    pass

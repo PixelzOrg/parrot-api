@@ -1,0 +1,154 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Storage API",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/": {
+      "get": {
+        "description": "Returns message showing app is up",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          }
+        }
+      }
+    },
+    "/video/<username>/upload": {
+      "post": {
+        "description": "Uploads a video to the server for a user",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "UserVideoUpload",
+            "in": "body",
+            "description": "JSON data for the API",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UserVideoUpload"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Video uploaded successfully"
+          },
+          "400": {
+            "description": "Something is wrong with your video"
+          },
+          "500": {
+            "description": "Something went wrong on our end"
+          }
+        }
+      }
+    },
+    "/video/<username>/all": {
+      "get": {
+        "description": "Fetches all of the videos for a user",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/VideoRequestResponse"
+            }
+          },
+          "400": {
+            "description": "Something is wrong with your video"
+          },
+          "500": {
+            "description": "Something went wrong on our end"
+          }
+        }
+      }
+    },
+    "/video/<username>/by-date": {
+      "post": {
+        "description": "Fetches all of the videos for a user by date",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "VideoByDate",
+            "in": "body",
+            "description": "JSON data for the API",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/VideoByDate"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/VideoRequestResponse"
+            }
+          },
+          "400": {
+            "description": "Something is wrong with your video"
+          },
+          "500": {
+            "description": "Something went wrong on our end"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "UserVideoUpload": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string"
+        },
+        "video": {
+          "type": "binary"
+        }
+      }
+    },
+    "VideoByDate": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string"
+        }
+      }
+    },
+    "VideoRequestResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "videos": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
