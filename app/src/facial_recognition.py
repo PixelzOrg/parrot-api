@@ -1,5 +1,4 @@
-import os
-from retinaface import RetinaFace
+
 
 def extract_faces(folder_path):
     """

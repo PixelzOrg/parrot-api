@@ -1,8 +1,6 @@
 import os
 from flask import Flask
 from flask_swagger_ui import get_swaggerui_blueprint
-from flask_sqlalchemy import SQLAlchemy
-from celery import Celery, Task
 from app.routes.videos import videos
 from app.routes.health_checks import health_checks
 

@@ -1,8 +1,4 @@
-from . import create_whisper_instance
-from pathlib import Path
-from whisper.utils import get_writer
 
-whisper_model = create_whisper_instance()
 
 def transcribe_file(file, plain, vtt):
     """"
