@@ -4,9 +4,26 @@
     "title": "Storage API",
     "version": "1.0.0"
   },
+  "tags": [
+    {
+      "name": "Health",
+      "description": "Health checks related to the API, making sure everything is up and running."
+    },
+    {
+      "name": "Users",
+      "description": "All of your user related needs, creating, destroying, etc."
+    },
+    {
+      "name": "Videos",
+      "description": "Everything related to videos, uploading, fetching, etc."
+    }
+  ],
   "paths": {
     "/": {
       "get": {
+        "tags": [
+          "Health"
+        ],
         "description": "Returns message showing app is up",
         "produces": [
           "application/json"
@@ -18,8 +35,83 @@
         }
       }
     },
+    "/users/create" : {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Creates a new user",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "User",
+            "in": "body",
+            "description": "JSON data for the API",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User created successfully"
+          },
+          "400": {
+            "description": "Something is wrong with your request type"
+          },
+          "500": {
+            "description": "Something went wrong on our end"
+          }
+        }
+      }
+    },
+    "/users/<username>/delete" : {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Deletes a user and all of their data from the server",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "User",
+            "in": "body",
+            "description": "JSON data for the API",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User deleted successfully"
+          },
+          "400": {
+            "description": "Something is wrong with your request type"
+          },
+          "500": {
+            "description": "Something went wrong on our end"
+          }
+        }
+      }
+    },
     "/video/<username>/upload": {
       "post": {
+        "tags": [
+          "Videos"
+        ],
         "description": "Uploads a video to the server for a user",
         "consumes": [
           "application/json"
@@ -43,7 +135,7 @@
             "description": "Video uploaded successfully"
           },
           "400": {
-            "description": "Something is wrong with your video"
+            "description": "Something is wrong with your request type"
           },
           "500": {
             "description": "Something went wrong on our end"
@@ -53,6 +145,9 @@
     },
     "/video/<username>/all": {
       "get": {
+        "tags": [
+          "Videos"
+        ],
         "description": "Fetches all of the videos for a user",
         "consumes": [
           "application/json"
@@ -68,7 +163,7 @@
             }
           },
           "400": {
-            "description": "Something is wrong with your video"
+            "description": "Something is wrong with your request type"
           },
           "500": {
             "description": "Something went wrong on our end"
@@ -78,6 +173,9 @@
     },
     "/video/<username>/by-date": {
       "post": {
+        "tags": [
+          "Videos"
+        ],
         "description": "Fetches all of the videos for a user by date",
         "consumes": [
           "application/json"
@@ -104,7 +202,7 @@
             }
           },
           "400": {
-            "description": "Something is wrong with your video"
+            "description": "Something is wrong with your request type"
           },
           "500": {
             "description": "Something went wrong on our end"
@@ -114,6 +212,14 @@
     }
   },
   "definitions": {
+    "User": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string"
+        }
+      }
+    },
     "UserVideoUpload": {
       "type": "object",
       "properties": {
