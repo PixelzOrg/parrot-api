@@ -209,6 +209,95 @@
           }
         }
       }
+    },
+    "/video/<username>/by-date-range": {
+      "post": {
+        "tags": [
+          "Videos"
+        ],
+        "description": "Fetches all of the videos for a user for a date range",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "VideoByDate",
+            "in": "body",
+            "description": "JSON data for the API",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/VideoByDateRange"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/VideoRequestResponse"
+            }
+          },
+          "400": {
+            "description": "Something is wrong with your request type"
+          },
+          "500": {
+            "description": "Something went wrong on our end"
+          }
+        }
+      }
+    },
+    "/video/<username>/<video_name>": {
+      "get": {
+        "tags": [
+          "Videos"
+        ],
+        "description": "Fetches a video for a user by name",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "400": {
+            "description": "Something is wrong with your request type"
+          },
+          "500": {
+            "description": "Something went wrong on our end"
+          }
+        }
+      }
+    },
+    "/video/<username>/<video_name>/delete": {
+      "post": {
+        "tags": [
+          "Videos"
+        ],
+        "description": "Deletes a video for a user by name",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "400": {
+            "description": "Something is wrong with your request type"
+          },
+          "500": {
+            "description": "Something went wrong on our end"
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -238,7 +327,33 @@
           "type": "string"
         },
         "date": {
+          "day": "string",
+          "month": "string",
+          "year": "string",
+          "minute": "string",
+          "hour": "string"
+        }
+      }
+    },
+    "VideoByDateRange": {
+      "type": "object",
+      "properties": {
+        "username": {
           "type": "string"
+        },
+        "date_one": {
+          "day": "string",
+          "month": "string",
+          "year": "string",
+          "minute": "string",
+          "hour": "string"
+        },
+        "date_two": {
+          "day": "string",
+          "month": "string",
+          "year": "string",
+          "minute": "string",
+          "hour": "string"
         }
       }
     },
