@@ -1,8 +1,3 @@
-from flask import Blueprint, jsonify, request
-
-users = Blueprint('users', __name__)
-
-@users.route('/create', methods=['POST'])
 def create_new_user(username: str):
     """
     Pulls username from request body and creates a 
@@ -40,16 +35,3 @@ def create_new_user(username: str):
             "message": "Internal server error",
             "error": str(e)
             }), 500
-
-@users.route('/<username>/delete', methods=['DELETE'])
-def delete_user(username: str):
-    """
-    Deletes a user and all their data from S3 and SQL.
-
-    Args:
-        username (str): The username of the user.
-
-    Returns:
-        None
-    """
-    pass

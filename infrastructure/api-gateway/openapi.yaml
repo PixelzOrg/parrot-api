@@ -1,0 +1,233 @@
+openapi: 3.0.0
+info:
+  title: "Storage API"
+  version: "1.0.0"
+tags:
+  - name: Health
+    description: "Health checks related to the API, making sure everything is up and running."
+  - name: Users
+    description: "All of your user-related needs, creating, destroying, etc."
+  - name: Videos
+    description: "Everything related to videos, uploading, fetching, etc."
+paths:
+  /:
+    get:
+      tags:
+        - Health
+      description: "Returns a message showing the app is up"
+      responses:
+        '200':
+          description: "Successful operation"
+        '500':
+          description: "Something went wrong on our end"
+  /users/create:
+    post:
+      tags:
+        - Users
+      description: "Creates a new user"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        '200':
+          description: "User created successfully"
+        '400':
+          description: "Something is wrong with your request type"
+        '500':
+          description: "Something went wrong on our end"
+  /users/{username}/delete:
+    post:
+      tags:
+        - Users
+      description: "Deletes a user and all of their data from the server"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        '200':
+          description: "User deleted successfully"
+        '400':
+          description: "Something is wrong with your request type"
+        '500':
+          description: "Something went wrong on our end"
+  /video/{username}/upload:
+    post:
+      tags:
+        - Videos
+      description: "Uploads a video to the server for a user"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserVideoUpload"
+      responses:
+        '200':
+          description: "Video uploaded successfully"
+        '400':
+          description: "Something is wrong with your request type"
+        '500':
+          description: "Something went wrong on our end"
+  /video/{username}/all:
+    get:
+      tags:
+        - Videos
+      description: "Fetches all of the videos for a user"
+      responses:
+        '200':
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VideoRequestResponse"
+        '400':
+          description: "Something is wrong with your request type"
+        '500':
+          description: "Something went wrong on our end"
+  /video/{username}/by-date:
+    post:
+      tags:
+        - Videos
+      description: "Fetches all of the videos for a user by date"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VideoByDate"
+      responses:
+        '200':
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VideoRequestResponse"
+        '400':
+          description: "Something is wrong with your request type"
+        '500':
+          description: "Something went wrong on our end"
+  /video/{username}/by-date-range:
+    post:
+      tags:
+        - Videos
+      description: "Fetches all of the videos for a user for a date range"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VideoByDateRange"
+      responses:
+        '200':
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VideoRequestResponse"
+        '400':
+          description: "Something is wrong with your request type"
+        '500':
+          description: "Something went wrong on our end"
+  /video/{username}/{video_name}:
+    get:
+      tags:
+        - Videos
+      description: "Fetches a video for a user by name"
+      responses:
+        '200':
+          description: "Successful operation"
+        '400':
+          description: "Something is wrong with your request type"
+        '500':
+          description: "Something went wrong on our end"
+  /video/{username}/{video_name}/delete:
+    post:
+      tags:
+        - Videos
+      description: "Deletes a video for a user by name"
+      responses:
+        '200':
+          description: "Successful operation"
+        '400':
+          description: "Something is wrong with your request type"
+        '500':
+          description: "Something went wrong on our end"
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        username:
+          type: string
+    UserVideoUpload:
+      type: object
+      properties:
+        username:
+          type: string
+        video:
+          type: string
+          format: binary
+    VideoByDate:
+      type: object
+      properties:
+        username:
+          type: string
+        date:
+          type: object
+          properties:
+            day:
+              type: string
+            month:
+              type: string
+            year:
+              type: string
+            minute:
+              type: string
+            hour:
+              type: string
+    VideoByDateRange:
+      type: object
+      properties:
+        username:
+          type: string
+        date_one:
+          type: object
+          properties:
+            day:
+              type: string
+            month:
+              type: string
+            year:
+              type: string
+            minute:
+              type: string
+            hour:
+              type: string
+        date_two:
+          type: object
+          properties:
+            day:
+              type: string
+            month:
+              type: string
+            year:
+              type: string
+            minute:
+              type: string
+            hour:
+              type: string
+    VideoRequestResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        videos:
+          type: array
+          items:
+            type: string

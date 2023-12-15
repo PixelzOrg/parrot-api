@@ -1,0 +1,58 @@
+version: '3'
+
+services:
+  health_check_function:
+    build:
+      context: .
+      dockerfile: ./functions/health_check_function/Dockerfile
+    volumes:
+      - ./functions/health_check_function:/app
+    command: ["python", "lambda_function.py"]
+
+  create_user_function:
+    build:
+      context: .
+      dockerfile: ./functions/create_user_function/Dockerfile
+    volumes:
+      - ./functions/create_user_function:/app
+    command: ["python", "lambda_function.py"]
+
+  delete_user_function:
+    build:
+      context: .
+      dockerfile: ./functions/delete_user_function/Dockerfile
+    volumes:
+      - ./functions/delete_user_function:/app
+    command: ["python", "lambda_function.py"]
+  
+  upload_video_function:
+    build:
+      context: .
+      dockerfile: ./functions/upload_video_function/Dockerfile
+    volumes:
+      - ./functions/upload_video_function:/app
+    command: ["python", "lambda_function.py"]
+  
+  fetch_all_videos_function:
+    build:
+      context: .
+      dockerfile: ./functions/fetch_all_videos_function/Dockerfile
+    volumes:
+      - ./functions/fetch_all_videos_function:/app
+    command: ["python", "lambda_function.py"]
+
+  fetch_videos_by_date_function:
+    build:
+      context: .
+      dockerfile: ./functions/fetch_videos_by_date_function/Dockerfile
+    volumes:
+      - ./functions/fetch_videos_by_date_function:/app
+    command: ["python", "lambda_function.py"]
+
+  fetch_videos_by_date_range_function:
+    build:
+      context: .
+      dockerfile: ./functions/fetch_videos_by_date_range_function/Dockerfile
+    volumes:
+      - ./functions/fetch_videos_by_date_range_function:/app
+    command: ["python", "lambda_function.py"]
