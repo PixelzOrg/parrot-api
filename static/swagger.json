@@ -21,13 +21,9 @@
   "paths": {
     "/": {
       "get": {
-        "tags": [
-          "Health"
-        ],
+        "tags": ["Health"],
         "description": "Returns message showing app is up",
-        "produces": [
-          "application/json"
-        ],
+        "produces": ["application/json"],
         "responses": {
           "200": {
             "description": "Successful operation"
@@ -35,18 +31,12 @@
         }
       }
     },
-    "/users/create" : {
+    "/users/create": {
       "post": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "description": "Creates a new user",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
         "parameters": [
           {
             "name": "User",
@@ -71,18 +61,12 @@
         }
       }
     },
-    "/users/<username>/delete" : {
+    "/users/<username>/delete": {
       "post": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "description": "Deletes a user and all of their data from the server",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
         "parameters": [
           {
             "name": "User",
@@ -109,16 +93,10 @@
     },
     "/video/<username>/upload": {
       "post": {
-        "tags": [
-          "Videos"
-        ],
+        "tags": ["Videos"],
         "description": "Uploads a video to the server for a user",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
         "parameters": [
           {
             "name": "UserVideoUpload",
@@ -145,16 +123,10 @@
     },
     "/video/<username>/all": {
       "get": {
-        "tags": [
-          "Videos"
-        ],
+        "tags": ["Videos"],
         "description": "Fetches all of the videos for a user",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
         "responses": {
           "200": {
             "description": "Successful operation",
@@ -173,16 +145,10 @@
     },
     "/video/<username>/by-date": {
       "post": {
-        "tags": [
-          "Videos"
-        ],
+        "tags": ["Videos"],
         "description": "Fetches all of the videos for a user by date",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
         "parameters": [
           {
             "name": "VideoByDate",
@@ -212,16 +178,10 @@
     },
     "/video/<username>/by-date-range": {
       "post": {
-        "tags": [
-          "Videos"
-        ],
+        "tags": ["Videos"],
         "description": "Fetches all of the videos for a user for a date range",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
         "parameters": [
           {
             "name": "VideoByDate",
@@ -251,16 +211,10 @@
     },
     "/video/<username>/<video_name>": {
       "get": {
-        "tags": [
-          "Videos"
-        ],
+        "tags": ["Videos"],
         "description": "Fetches a video for a user by name",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
         "responses": {
           "200": {
             "description": "Successful operation"
@@ -276,16 +230,10 @@
     },
     "/video/<username>/<video_name>/delete": {
       "post": {
-        "tags": [
-          "Videos"
-        ],
+        "tags": ["Videos"],
         "description": "Deletes a video for a user by name",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
         "responses": {
           "200": {
             "description": "Successful operation"

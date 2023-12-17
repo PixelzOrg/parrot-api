@@ -1,163 +1,163 @@
 openapi: 3.0.0
 info:
-  title: "Storage API"
-  version: "1.0.0"
+  title: 'Storage API'
+  version: '1.0.0'
 tags:
   - name: Health
-    description: "Health checks related to the API, making sure everything is up and running."
+    description: 'Health checks related to the API, making sure everything is up and running.'
   - name: Users
-    description: "All of your user-related needs, creating, destroying, etc."
+    description: 'All of your user-related needs, creating, destroying, etc.'
   - name: Videos
-    description: "Everything related to videos, uploading, fetching, etc."
+    description: 'Everything related to videos, uploading, fetching, etc.'
 paths:
   /:
     get:
       tags:
         - Health
-      description: "Returns a message showing the app is up"
+      description: 'Returns a message showing the app is up'
       responses:
         '200':
-          description: "Successful operation"
+          description: 'Successful operation'
         '500':
-          description: "Something went wrong on our end"
+          description: 'Something went wrong on our end'
   /users/create:
     post:
       tags:
         - Users
-      description: "Creates a new user"
+      description: 'Creates a new user'
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/User"
+              $ref: '#/components/schemas/User'
       responses:
         '200':
-          description: "User created successfully"
+          description: 'User created successfully'
         '400':
-          description: "Something is wrong with your request type"
+          description: 'Something is wrong with your request type'
         '500':
-          description: "Something went wrong on our end"
+          description: 'Something went wrong on our end'
   /users/{username}/delete:
     post:
       tags:
         - Users
-      description: "Deletes a user and all of their data from the server"
+      description: 'Deletes a user and all of their data from the server'
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/User"
+              $ref: '#/components/schemas/User'
       responses:
         '200':
-          description: "User deleted successfully"
+          description: 'User deleted successfully'
         '400':
-          description: "Something is wrong with your request type"
+          description: 'Something is wrong with your request type'
         '500':
-          description: "Something went wrong on our end"
+          description: 'Something went wrong on our end'
   /video/{username}/upload:
     post:
       tags:
         - Videos
-      description: "Uploads a video to the server for a user"
+      description: 'Uploads a video to the server for a user'
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/UserVideoUpload"
+              $ref: '#/components/schemas/UserVideoUpload'
       responses:
         '200':
-          description: "Video uploaded successfully"
+          description: 'Video uploaded successfully'
         '400':
-          description: "Something is wrong with your request type"
+          description: 'Something is wrong with your request type'
         '500':
-          description: "Something went wrong on our end"
+          description: 'Something went wrong on our end'
   /video/{username}/all:
     get:
       tags:
         - Videos
-      description: "Fetches all of the videos for a user"
+      description: 'Fetches all of the videos for a user'
       responses:
         '200':
-          description: "Successful operation"
+          description: 'Successful operation'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/VideoRequestResponse"
+                $ref: '#/components/schemas/VideoRequestResponse'
         '400':
-          description: "Something is wrong with your request type"
+          description: 'Something is wrong with your request type'
         '500':
-          description: "Something went wrong on our end"
+          description: 'Something went wrong on our end'
   /video/{username}/by-date:
     post:
       tags:
         - Videos
-      description: "Fetches all of the videos for a user by date"
+      description: 'Fetches all of the videos for a user by date'
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/VideoByDate"
+              $ref: '#/components/schemas/VideoByDate'
       responses:
         '200':
-          description: "Successful operation"
+          description: 'Successful operation'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/VideoRequestResponse"
+                $ref: '#/components/schemas/VideoRequestResponse'
         '400':
-          description: "Something is wrong with your request type"
+          description: 'Something is wrong with your request type'
         '500':
-          description: "Something went wrong on our end"
+          description: 'Something went wrong on our end'
   /video/{username}/by-date-range:
     post:
       tags:
         - Videos
-      description: "Fetches all of the videos for a user for a date range"
+      description: 'Fetches all of the videos for a user for a date range'
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/VideoByDateRange"
+              $ref: '#/components/schemas/VideoByDateRange'
       responses:
         '200':
-          description: "Successful operation"
+          description: 'Successful operation'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/VideoRequestResponse"
+                $ref: '#/components/schemas/VideoRequestResponse'
         '400':
-          description: "Something is wrong with your request type"
+          description: 'Something is wrong with your request type'
         '500':
-          description: "Something went wrong on our end"
+          description: 'Something went wrong on our end'
   /video/{username}/{video_name}:
     get:
       tags:
         - Videos
-      description: "Fetches a video for a user by name"
+      description: 'Fetches a video for a user by name'
       responses:
         '200':
-          description: "Successful operation"
+          description: 'Successful operation'
         '400':
-          description: "Something is wrong with your request type"
+          description: 'Something is wrong with your request type'
         '500':
-          description: "Something went wrong on our end"
+          description: 'Something went wrong on our end'
   /video/{username}/{video_name}/delete:
     post:
       tags:
         - Videos
-      description: "Deletes a video for a user by name"
+      description: 'Deletes a video for a user by name'
       responses:
         '200':
-          description: "Successful operation"
+          description: 'Successful operation'
         '400':
-          description: "Something is wrong with your request type"
+          description: 'Something is wrong with your request type'
         '500':
-          description: "Something went wrong on our end"
+          description: 'Something went wrong on our end'
 components:
   schemas:
     User:

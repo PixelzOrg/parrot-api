@@ -1,8 +1,8 @@
 // config/lambda-configs.ts
-import 'dotenv/config';
-import * as lambda from '@aws-cdk/aws-lambda';
-import { S3_ACTIONS } from '../models/constants';
-import { LambdaConfig } from '../models/lambdas';
+import 'dotenv/config'
+import * as lambda from '@aws-cdk/aws-lambda'
+import { S3_ACTIONS } from '../models/constants'
+import { LambdaConfig } from '../models/lambdas'
 
 export const lambdaConfigs: LambdaConfig[] = [
   {
@@ -13,8 +13,8 @@ export const lambdaConfigs: LambdaConfig[] = [
     policies: [],
     corsConfig: {
       allowMethods: [lambda.HttpMethod.GET],
-      allowHeaders: ["*"],
-      allowOrigins: ["*"],
+      allowHeaders: ['*'],
+      allowOrigins: ['*'],
     },
   },
   {
@@ -25,13 +25,13 @@ export const lambdaConfigs: LambdaConfig[] = [
     policies: [
       {
         actions: [S3_ACTIONS.PUT_OBJECT],
-        resources: [process.env.AWS_USER_BUCKET_ARN as string], 
+        resources: [process.env.AWS_USER_BUCKET_ARN as string],
       },
     ],
     corsConfig: {
       allowMethods: [lambda.HttpMethod.POST],
-      allowHeaders: ["*"],
-      allowOrigins: ["*"],
+      allowHeaders: ['*'],
+      allowOrigins: ['*'],
     },
   },
   {
@@ -42,13 +42,13 @@ export const lambdaConfigs: LambdaConfig[] = [
     policies: [
       {
         actions: [S3_ACTIONS.DELETE_OBJECT],
-        resources: [process.env.AWS_USER_BUCKET_ARN as string], 
+        resources: [process.env.AWS_USER_BUCKET_ARN as string],
       },
     ],
     corsConfig: {
       allowMethods: [lambda.HttpMethod.DELETE],
-      allowHeaders: ["*"],
-      allowOrigins: ["*"],
+      allowHeaders: ['*'],
+      allowOrigins: ['*'],
     },
   },
   {
@@ -58,14 +58,14 @@ export const lambdaConfigs: LambdaConfig[] = [
     policies: [
       {
         actions: [S3_ACTIONS.PUT_OBJECT],
-        resources: [process.env.AWS_USER_BUCKET_ARN as string], 
+        resources: [process.env.AWS_USER_BUCKET_ARN as string],
       },
     ],
     authType: lambda.FunctionUrlAuthType.NONE,
     corsConfig: {
       allowMethods: [lambda.HttpMethod.POST],
-      allowHeaders: ["*"],
-      allowOrigins: ["*"],
+      allowHeaders: ['*'],
+      allowOrigins: ['*'],
     },
   },
   {
@@ -81,8 +81,8 @@ export const lambdaConfigs: LambdaConfig[] = [
     ],
     corsConfig: {
       allowMethods: [lambda.HttpMethod.DELETE],
-      allowHeaders: ["*"],
-      allowOrigins: ["*"],
+      allowHeaders: ['*'],
+      allowOrigins: ['*'],
     },
   },
   {
@@ -98,8 +98,8 @@ export const lambdaConfigs: LambdaConfig[] = [
     ],
     corsConfig: {
       allowMethods: [lambda.HttpMethod.POST],
-      allowHeaders: ["*"],
-      allowOrigins: ["*"],
+      allowHeaders: ['*'],
+      allowOrigins: ['*'],
     },
   },
   {
@@ -115,8 +115,8 @@ export const lambdaConfigs: LambdaConfig[] = [
     ],
     corsConfig: {
       allowMethods: [lambda.HttpMethod.GET],
-      allowHeaders: ["*"],
-      allowOrigins: ["*"],
+      allowHeaders: ['*'],
+      allowOrigins: ['*'],
     },
   },
   {
@@ -132,8 +132,8 @@ export const lambdaConfigs: LambdaConfig[] = [
     ],
     corsConfig: {
       allowMethods: [lambda.HttpMethod.POST],
-      allowHeaders: ["*"],
-      allowOrigins: ["*"],
+      allowHeaders: ['*'],
+      allowOrigins: ['*'],
     },
   },
   {
@@ -149,8 +149,8 @@ export const lambdaConfigs: LambdaConfig[] = [
     ],
     corsConfig: {
       allowMethods: [lambda.HttpMethod.POST],
-      allowHeaders: ["*"],
-      allowOrigins: ["*"],
+      allowHeaders: ['*'],
+      allowOrigins: ['*'],
     },
   },
-];
+]

@@ -1,16 +1,16 @@
-import * as lambda from '@aws-cdk/aws-lambda';
-import * as apigateway from '@aws-cdk/aws-apigateway';
+import * as lambda from '@aws-cdk/aws-lambda'
+import * as apigateway from '@aws-cdk/aws-apigateway'
 
 export interface LambdaConfig {
-  name: string;
+  name: string
   url: string
-  path: string;
-  authType: lambda.FunctionUrlAuthType;
-  policies: Policy[];
-  corsConfig: apigateway.CorsOptions;
+  path: string
+  authType: lambda.FunctionUrlAuthType
+  policies: Policy[]
+  corsConfig: apigateway.CorsOptions
 }
 
 export interface Policy {
-  actions: string[];
-  resources: string[];
+  actions: string[]
+  resources: string[]
 }
