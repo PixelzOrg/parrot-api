@@ -1,9 +1,9 @@
 import * as cdk from 'aws-cdk-lib';
 import * as lambda from "aws-cdk-lib/aws-lambda";
-import { Role, ServicePrincipal, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { Construct } from 'constructs';
 import { lambdaConfigs, LambdaConfig } from '../config/lambda-configs';
 import { ApiGateway } from './api_gateway';
+import { PolicyStatement } from 'aws-cdk-lib/aws-iam';
 
 export class API extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -23,6 +23,17 @@ export class API extends cdk.Stack {
         timeout: cdk.Duration.seconds(10),
         architecture: lambda.Architecture.ARM_64,
       });
+
+      if (config.policies) {
+        for (const policy of config.policies) {
+          lambdaFunction.addToRolePolicy(
+            new PolicyStatement({
+              actions: policy.actions,
+              resources: policy.resources,
+            }),
+          );
+        }
+      }
       // @ts-ignore
       api.addIntegration(config.corsConfig.allowMethods[0], config.url, lambdaFunction);
     }
