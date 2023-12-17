@@ -25,7 +25,7 @@ export const lambdaConfigs: LambdaConfig[] = [
     policies: [
       {
         actions: [S3_ACTIONS.PUT_OBJECT],
-        resources: [process.env.AWS_USER_BUCKET_ARN + '/*'], 
+        resources: [process.env.AWS_USER_BUCKET_ARN as string], 
       },
     ],
     corsConfig: {
@@ -42,7 +42,7 @@ export const lambdaConfigs: LambdaConfig[] = [
     policies: [
       {
         actions: [S3_ACTIONS.DELETE_OBJECT],
-        resources: [process.env.AWS_USER_BUCKET_ARN + '/*'], 
+        resources: [process.env.AWS_USER_BUCKET_ARN as string], 
       },
     ],
     corsConfig: {
@@ -58,7 +58,7 @@ export const lambdaConfigs: LambdaConfig[] = [
     policies: [
       {
         actions: [S3_ACTIONS.PUT_OBJECT],
-        resources: [process.env.AWS_USER_BUCKET_ARN + '/*'], 
+        resources: [process.env.AWS_USER_BUCKET_ARN as string], 
       },
     ],
     authType: lambda.FunctionUrlAuthType.NONE,
@@ -76,7 +76,7 @@ export const lambdaConfigs: LambdaConfig[] = [
     policies: [
       {
         actions: [S3_ACTIONS.DELETE_OBJECT],
-        resources: [process.env.AWS_USER_BUCKET_ARN + '/*'],
+        resources: [process.env.AWS_USER_BUCKET_ARN as string],
       },
     ],
     corsConfig: {
@@ -93,7 +93,7 @@ export const lambdaConfigs: LambdaConfig[] = [
     policies: [
       {
         actions: [S3_ACTIONS.GET_OBJECT],
-        resources: [process.env.AWS_USER_BUCKET_ARN + '/*'],
+        resources: [process.env.AWS_USER_BUCKET_ARN as string],
       },
     ],
     corsConfig: {
@@ -110,7 +110,7 @@ export const lambdaConfigs: LambdaConfig[] = [
     policies: [
       {
         actions: [S3_ACTIONS.GET_OBJECT],
-        resources: [process.env.AWS_USER_BUCKET_ARN + '/*'],
+        resources: [process.env.AWS_USER_BUCKET_ARN as string],
       },
     ],
     corsConfig: {
@@ -127,7 +127,7 @@ export const lambdaConfigs: LambdaConfig[] = [
     policies: [
       {
         actions: [S3_ACTIONS.GET_OBJECT],
-        resources: [process.env.AWS_USER_BUCKET_ARN + '/*'],
+        resources: [process.env.AWS_USER_BUCKET_ARN as string],
       },
     ],
     corsConfig: {
@@ -144,7 +144,7 @@ export const lambdaConfigs: LambdaConfig[] = [
     policies: [
       {
         actions: [S3_ACTIONS.GET_OBJECT],
-        resources: [process.env.AWS_USER_BUCKET_ARN + '/*'],
+        resources: [process.env.AWS_USER_BUCKET_ARN as string],
       },
     ],
     corsConfig: {
