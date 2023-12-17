@@ -1,21 +1,8 @@
 // config/lambda-configs.ts
 import 'dotenv/config';
 import * as lambda from '@aws-cdk/aws-lambda';
-import * as apigateway from '@aws-cdk/aws-apigateway';
 import { S3_ACTIONS } from '../models/constants';
-
-
-export interface LambdaConfig {
-  name: string;
-  url: string
-  path: string;
-  authType: lambda.FunctionUrlAuthType;
-  policies: {
-    actions: string[];
-    resources: string[];
-  }[];
-  corsConfig: apigateway.CorsOptions;
-}
+import { LambdaConfig } from '../models/lambdas';
 
 export const lambdaConfigs: LambdaConfig[] = [
   {

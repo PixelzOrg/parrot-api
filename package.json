@@ -21,9 +21,9 @@
     "typescript": "~5.3.3"
   },
   "dependencies": {
-    "@aws-cdk/aws-apigateway": "^1.204.0",
-    "@aws-cdk/aws-iam": "^1.204.0",
-    "@aws-cdk/aws-lambda": "^1.204.0",
+    "@aws-cdk/aws-apigateway": "^1.38.0",
+    "@aws-cdk/aws-iam": "^1.149.0",
+    "@aws-cdk/aws-lambda": "^1.19.0",
     "aws-cdk-lib": "2.115.0",
     "aws-iam": "^2.0.5",
     "constructs": "^10.0.0",
