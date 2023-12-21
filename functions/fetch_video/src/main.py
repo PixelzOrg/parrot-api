@@ -1,34 +1,50 @@
+import boto3
+import logging
+import json
+from utility import create_presigned_url
+
+s3_client = boto3.client('s3')
+BUCKET_NAME = 'user-videos-bucket'
+
 def handler(event, context):
-    """
-    Pulls username from request body and creates a 
-    new user in our S3 bucket and SQL database.
-
-    params:
-        request.json (dict): A dictionary representing the JSON payload with the following structure:
-            {
-                "username": "string"
-            }
-
-    Returns:
-        A JSON response with the result of the upload 
-    """
     try:
-        #
-
-        # create new user in s3 and sql
-
-        return {
-            "message": "User created successfully."
-            }, 200
-
-    except ValueError as e:
-        return ({
-            "message": "Something is wrong with your request", 
-            "error": str(e)
-            }), 400
+        body = json.loads(event['body'])
+        username = body['username']
+        video_id = body['video_id']
 
     except Exception as e:
-        return ({
-            "message": "Internal server error",
-            "error": str(e)
-            }), 500
+        return {
+            'statusCode': 400,
+            'body': json.dumps(
+                {
+                    'message': 'Invalid request format',
+                    'error': str(e)
+                }
+            )
+        }
+
+    try:
+        # Generate a unique presigned URL for the video
+        url = create_presigned_url(BUCKET_NAME, f"{username}/{video_id}.mp4")
+
+        if url:
+            return {
+            'statusCode': 200,
+            'body': json.dumps(
+                {
+                    'message': 'Presigned URL generated successfully', 
+                    'video_url': url
+                }
+            )
+        }
+
+    except Exception as e:
+        return {
+            'statusCode': 500,
+            'body': json.dumps(
+                {
+                    'message': 'Failed to generate presigned URL',
+                    'error': str(e)
+                }
+            )
+        }

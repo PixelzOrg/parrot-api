@@ -8,6 +8,9 @@ export interface LambdaConfig {
   authType: lambda.FunctionUrlAuthType
   policies: Policy[]
   corsConfig: apigateway.CorsOptions
+  secrets: {
+    [key: string]: string
+  }
 }
 
 export interface Policy {

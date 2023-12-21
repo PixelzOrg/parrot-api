@@ -12,6 +12,7 @@ export function createLambdaFunction(
     code: lambda.DockerImageCode.fromImageAsset(config.path),
     timeout: cdk.Duration.seconds(10),
     architecture: lambda.Architecture.ARM_64,
+    environment: config.secrets
   })
 }
 

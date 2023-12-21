@@ -1,5 +1,6 @@
 // config/lambda-configs.ts
 import 'dotenv/config'
+import * as secrets from "aws-cdk-lib/aws-secretsmanager";
 import * as lambda from '@aws-cdk/aws-lambda'
 import { S3_ACTIONS } from '../models/constants'
 import { LambdaConfig } from '../models/lambdas'
@@ -16,6 +17,7 @@ export const lambdaConfigs: LambdaConfig[] = [
       allowHeaders: ['*'],
       allowOrigins: ['*'],
     },
+    secrets: {},
   },
   {
     name: 'Create User',
@@ -33,6 +35,7 @@ export const lambdaConfigs: LambdaConfig[] = [
       allowHeaders: ['*'],
       allowOrigins: ['*'],
     },
+    secrets: {},
   },
   {
     name: 'Delete User',
@@ -50,11 +53,12 @@ export const lambdaConfigs: LambdaConfig[] = [
       allowHeaders: ['*'],
       allowOrigins: ['*'],
     },
+    secrets: {},
   },
   {
-    name: 'Upload Video',
-    url: '/api/v1/videos/upload',
-    path: './functions/upload_video/',
+    name: 'Upload Video File',
+    url: '/api/v1/videos/upload/file',
+    path: './functions/upload_video_file/',
     policies: [
       {
         actions: [S3_ACTIONS.PUT_OBJECT],
@@ -67,6 +71,10 @@ export const lambdaConfigs: LambdaConfig[] = [
       allowHeaders: ['*'],
       allowOrigins: ['*'],
     },
+    secrets: {
+      S3_BUCKET_NAME: process.env.AWS_USER_BUCKET_NAME as string,
+      S3_BUCKET_ARN: process.env.AWS_USER_BUCKET_ARN as string,
+    },
   },
   {
     name: 'Delete Video',
@@ -75,7 +83,7 @@ export const lambdaConfigs: LambdaConfig[] = [
     authType: lambda.FunctionUrlAuthType.NONE,
     policies: [
       {
-        actions: [S3_ACTIONS.DELETE_OBJECT],
+        actions: [S3_ACTIONS.GET_OBJECT],
         resources: [process.env.AWS_USER_BUCKET_ARN as string],
       },
     ],
@@ -84,6 +92,7 @@ export const lambdaConfigs: LambdaConfig[] = [
       allowHeaders: ['*'],
       allowOrigins: ['*'],
     },
+    secrets: {},
   },
   {
     name: 'Fetch Video',
@@ -100,6 +109,10 @@ export const lambdaConfigs: LambdaConfig[] = [
       allowMethods: [lambda.HttpMethod.POST],
       allowHeaders: ['*'],
       allowOrigins: ['*'],
+    },
+    secrets: {
+      RDS_DATABASE_NAME: process.env.AWS_RDS_DATABASE_NAME as string,
+      RDS_DATABASE_ARN: process.env.AWS_RDS_DATABASE_ARN as string,
     },
   },
   {
@@ -118,6 +131,10 @@ export const lambdaConfigs: LambdaConfig[] = [
       allowHeaders: ['*'],
       allowOrigins: ['*'],
     },
+    secrets: {
+      RDS_DATABASE_NAME: process.env.AWS_RDS_DATABASE_NAME as string,
+      RDS_DATABASE_ARN: process.env.AWS_RDS_DATABASE_ARN as string,
+    },
   },
   {
     name: 'Fetch Videos by Date',
@@ -135,6 +152,10 @@ export const lambdaConfigs: LambdaConfig[] = [
       allowHeaders: ['*'],
       allowOrigins: ['*'],
     },
+    secrets: {
+      RDS_DATABASE_NAME: process.env.AWS_RDS_DATABASE_NAME as string,
+      RDS_DATABASE_ARN: process.env.AWS_RDS_DATABASE_ARN as string,
+    },
   },
   {
     name: 'Fetch Videos by Date Range',
@@ -151,6 +172,10 @@ export const lambdaConfigs: LambdaConfig[] = [
       allowMethods: [lambda.HttpMethod.POST],
       allowHeaders: ['*'],
       allowOrigins: ['*'],
+    },
+    secrets: {
+      RDS_DATABASE_NAME: process.env.AWS_RDS_DATABASE_NAME as string,
+      RDS_DATABASE_ARN: process.env.AWS_RDS_DATABASE_ARN as string,
     },
   },
 ]
