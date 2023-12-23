@@ -1,43 +1,33 @@
-import boto3
+import psycopg2
 import json
 import os
-import uuid
-from utility import create_presigned_post
 
-
-BUCKET_NAME = os.environ.get('S3_BUCKET_NAME')
-BUCKET_ARN = os.environ.get('S3_BUCKET_ARN')
+# Get RDS credentials from environment variables or AWS Secrets Manager
+DB_HOST = os.environ.get('AWS_USER_VIDEO_RDS_HOST')
+DB_PORT = os.environ.get('AWS_USER_VIDEO_RDS_PORT')
+DB_NAME = os.environ.get('AWS_USER_VIDEO_RDS_NAME')
+DB_USER = os.environ.get('AWS_USER_VIDEO_RDS_USER')
+DB_PASSWORD = os.environ.get('AWS_USER_VIDEO_RDS_PASSWORD')
 
 def handler(event, context):
-    try:
-        # Parse the JSON body
-        body = json.loads(event['body'])
-        username = body['username']
-        video_uuid = uuid.uuid4()
+    # Connect to the RDS database
+    conn = psycopg2.connect(
+        host=DB_HOST,
+        port=DB_PORT,
+        dbname=DB_NAME,
+        user=DB_USER,
+        password=DB_PASSWORD
+    )
 
-        video_filename = f"{username}/{video_uuid}.mp4"
+    # Use the connection to execute queries
+    with conn.cursor() as cur:
+        # Example: Insert metadata into a "videos" table
+        cur.execute("INSERT INTO videos (video_id, metadata) VALUES (%s, %s)", (event['video_id'], event['metadata']))
+        conn.commit()
 
-        # Generate a presigned URL for the S3 upload
-        presigned_url = create_presigned_post(BUCKET_NAME, video_filename)
-    except Exception as e:
-        return {
-            'statusCode': 400,
-            'body': json.dumps(
-                {
-                    'message': 'Invalid request format',
-                    'error': str(e)
-                }
-            )
-        }
+    conn.close()
 
     return {
         'statusCode': 200,
-        'body': json.dumps(
-            {
-                'message': 'Presigned URL generated successfully',
-                'expires': 3600,
-                'video_uuid': video_uuid,
-                'presigned_url': presigned_url
-            }
-        )
+        'body': json.dumps('Metadata uploaded successfully!')
     }

@@ -2,7 +2,7 @@
 import 'dotenv/config'
 import * as secrets from "aws-cdk-lib/aws-secretsmanager";
 import * as lambda from '@aws-cdk/aws-lambda'
-import { S3_ACTIONS } from '../models/constants'
+import { S3_ACTIONS, RDS_ACTIONS } from '../models/constants'
 import { LambdaConfig } from '../models/lambdas'
 
 export const lambdaConfigs: LambdaConfig[] = [
@@ -82,8 +82,8 @@ export const lambdaConfigs: LambdaConfig[] = [
     path: './functions/upload_video_meta_data/',
     policies: [
       {
-        actions: [S3_ACTIONS.PUT_OBJECT],
-        resources: [process.env.AWS_USER_BUCKET_ARN as string],
+        actions: [RDS_ACTIONS.INSERT],
+        resources: [process.env.AWS_USER_RDS_ARN as string],
       },
     ],
     authType: lambda.FunctionUrlAuthType.NONE,
@@ -93,8 +93,15 @@ export const lambdaConfigs: LambdaConfig[] = [
       allowOrigins: ['*'],
     },
     secrets: {
-      S3_BUCKET_NAME: process.env.AWS_USER_BUCKET_NAME as string,
-      S3_BUCKET_ARN: process.env.AWS_USER_BUCKET_ARN as string,
+      AWS_USER_RDS_ARN: process.env.AWS_USER_VIDE_RDS_ARN as string,
+      AWS_USER_RDS_NAME: process.env.AWS_USER_VIDEO_RDS_NAME as string,
+      AWS_USER_VIDEO_RDS_ARN: process.env.AWS_USER_VIDEO_RDS_ARN as string,
+      AWS_USER_VIDEO_RDS_NAME: process.env.AWS_USER_VIDEO_RDS_NAME as string,
+      AWS_USER_VIDEO_RDS_USERNAME: process.env.AWS_USER_VIDEO_RDS_USERNAME as string,
+      AWS_USER_VIDEO_RDS_PASSWORD: process.env.AWS_USER_VIDEO_RDS_PASSWORD as string,
+      AWS_USER_VIDEO_RDS_ENGINE: process.env.AWS_USER_VIDEO_RDS_ENGINE as string,
+      AWS_USER_VIDEO_RDS_HOST: process.env.AWS_USER_VIDEO_RDS_HOST as string,
+      AWS_USER_VIDEO_RDS_PORT: process.env.AWS_USER_VIDEO_RDS_PORT as string,
     },
   },
   {
