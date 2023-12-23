@@ -82,8 +82,8 @@ export const lambdaConfigs: LambdaConfig[] = [
     path: './functions/upload_video_meta_data/',
     policies: [
       {
-        actions: [RDS_ACTIONS.INSERT],
-        resources: [process.env.AWS_USER_RDS_ARN as string],
+        actions: [S3_ACTIONS.PUT_OBJECT],
+        resources: [process.env.AWS_USER_BUCKET_ARN as string],
       },
     ],
     authType: lambda.FunctionUrlAuthType.NONE,

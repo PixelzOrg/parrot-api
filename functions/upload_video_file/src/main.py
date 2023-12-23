@@ -13,6 +13,7 @@ def handler(event, context):
         # Parse the JSON body
         body = json.loads(event['body'])
         username = body['username']
+        
         video_uuid = uuid.uuid4()
 
         video_filename = f"{username}/{video_uuid}.mp4"
