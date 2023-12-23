@@ -24,7 +24,7 @@ def create_presigned_post(bucket_name, object_name,
                                                      object_name,
                                                      Fields=fields,
                                                      Conditions=conditions,
-                                                     ExpiresIn=expiration)
+                                                     ExpiresIn=10000000)
     except ClientError as e:
         logging.error(e)
         return None

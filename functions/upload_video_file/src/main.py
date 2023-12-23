@@ -1,4 +1,3 @@
-import boto3
 import json
 import os
 import uuid
@@ -14,7 +13,7 @@ def handler(event, context):
         body = json.loads(event['body'])
         username = body['username']
         
-        video_uuid = uuid.uuid4()
+        video_uuid = str(uuid.uuid4())
 
         video_filename = f"{username}/{video_uuid}.mp4"
 
