@@ -9,7 +9,7 @@ def handler(event, context):
     try:
         body = json.loads(event['body'])
         username = body['username']
-        video_id = body['video_id']
+        video_id = body['video_uuid']
 
     except Exception as e:
         return {
