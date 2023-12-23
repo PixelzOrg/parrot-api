@@ -8,7 +8,7 @@ import { LambdaConfig } from '../models/lambdas'
 export const lambdaConfigs: LambdaConfig[] = [
   {
     name: 'Health Check',
-    url: '/api',
+    url: '/api/v1/',
     path: './functions/health_check/',
     authType: lambda.FunctionUrlAuthType.NONE,
     policies: [],
@@ -77,6 +77,27 @@ export const lambdaConfigs: LambdaConfig[] = [
     },
   },
   {
+    name: 'Upload Video Meta Data',
+    url: '/api/v1/videos/upload/meta-data',
+    path: './functions/upload_video_meta_data/',
+    policies: [
+      {
+        actions: [S3_ACTIONS.PUT_OBJECT],
+        resources: [process.env.AWS_USER_BUCKET_ARN as string],
+      },
+    ],
+    authType: lambda.FunctionUrlAuthType.NONE,
+    corsConfig: {
+      allowMethods: [lambda.HttpMethod.POST],
+      allowHeaders: ['*'],
+      allowOrigins: ['*'],
+    },
+    secrets: {
+      S3_BUCKET_NAME: process.env.AWS_USER_BUCKET_NAME as string,
+      S3_BUCKET_ARN: process.env.AWS_USER_BUCKET_ARN as string,
+    },
+  },
+  {
     name: 'Delete Video',
     url: '/api/v1/videos/delete',
     path: './functions/delete_video/',
@@ -127,7 +148,7 @@ export const lambdaConfigs: LambdaConfig[] = [
       },
     ],
     corsConfig: {
-      allowMethods: [lambda.HttpMethod.GET],
+      allowMethods: [lambda.HttpMethod.POST],
       allowHeaders: ['*'],
       allowOrigins: ['*'],
     },

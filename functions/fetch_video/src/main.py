@@ -1,5 +1,4 @@
 import boto3
-import logging
 import json
 from utility import create_presigned_url
 
@@ -32,7 +31,7 @@ def handler(event, context):
             'statusCode': 200,
             'body': json.dumps(
                 {
-                    'message': 'Presigned URL generated successfully', 
+                    'message': 'Video URL generated successfully', 
                     'video_url': url
                 }
             )

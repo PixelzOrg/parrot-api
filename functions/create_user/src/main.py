@@ -6,6 +6,7 @@ import uuid
 s3_client = boto3.client('s3')
 BUCKET_NAME = os.environ['BUCKET_NAME']
 
+
 def lambda_handler(event, context):
     try:
         body = json.loads(event['body'])
@@ -14,6 +15,7 @@ def lambda_handler(event, context):
     except Exception as e:
         return {
             'statusCode': 400,
+            'error': str(e),
             'body': json.dumps({'error': 'Invalid request format'})
         }
 
