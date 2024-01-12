@@ -17,6 +17,8 @@ def handler(event, context):
 
         video_filename = f"{username}/{video_uuid}.mp4"
 
+        s3_client = boto3.client('s3')
+
         # Generate a presigned URL for the S3 upload
         presigned_url = create_presigned_post(BUCKET_NAME, video_filename)
     except Exception as e:
