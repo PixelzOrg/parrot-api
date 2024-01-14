@@ -11,16 +11,18 @@ def handler(event, context):
     try:
         # Parse the JSON body
         body = json.loads(event['body'])
-        username = body['username']
         
-        video_uuid = str(uuid.uuid4())
+        file_uuid = str(uuid.uuid4())
+        memory_id = str(uuid.uuid4())
 
-        video_filename = f"{username}/{video_uuid}.mp4"
-
-        s3_client = boto3.client('s3')
+        file_path = f"{memory_id}/{file_uuid}.mp4"
 
         # Generate a presigned URL for the S3 upload
-        presigned_url = create_presigned_post(BUCKET_NAME, video_filename)
+        presigned_url = create_presigned_post(
+            BUCKET_NAME,
+            file_path
+        )
+
     except Exception as e:
         return {
             'statusCode': 400,
@@ -38,7 +40,7 @@ def handler(event, context):
             {
                 'message': 'Presigned URL generated successfully',
                 'expires': 3600,
-                'video_uuid': video_uuid,
+                'file_path': file_path,
                 'presigned_url': presigned_url
             }
         )

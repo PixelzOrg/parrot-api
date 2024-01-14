@@ -1,25 +1,18 @@
 import * as cdk from 'aws-cdk-lib'
-import { Construct } from 'constructs'
-import { lambdaConfigs } from '../config/lambda-configs'
+
+import { LoadLambdaFunctions } from './lambdas';
 import { ApiGateway } from './api_gateway'
-import { createLambdaFunction } from './lambdas'
-import { addPoliciesToLambda } from './lambdas'
+import { FileProcessingStages } from './kinesis';
+import { Construct } from 'constructs'
+import { S3BucketStack } from './s3'
 
 export class API extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props)
 
     const api = new ApiGateway(this)
-
-    for (const config of lambdaConfigs) {
-      const lambdaFunction = createLambdaFunction(this, config)
-      addPoliciesToLambda(lambdaFunction, config.policies)
-      api.addIntegration(
-        // @ts-ignore
-        config.corsConfig.allowMethods[0],
-        config.url,
-        lambdaFunction
-      )
-    }
+    const bucket = new S3BucketStack(this, 'S3 Bucket')
+    const fileProcessingStages = new FileProcessingStages(this, 'FileProcessingStages')
+    const lambdas = LoadLambdaFunctions(this, fileProcessingStages)
   }
 }

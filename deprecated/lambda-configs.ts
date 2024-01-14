@@ -1,9 +1,8 @@
 // config/lambda-configs.ts
 import 'dotenv/config'
-import * as secrets from "aws-cdk-lib/aws-secretsmanager";
 import * as lambda from '@aws-cdk/aws-lambda'
-import { S3_ACTIONS, RDS_ACTIONS } from '../models/constants'
-import { LambdaConfig } from '../models/lambdas'
+import { S3_ACTIONS } from '../models/databases_models'
+import { LambdaConfig } from '../models/lambda_models'
 
 export const lambdaConfigs: LambdaConfig[] = [
   {
@@ -97,9 +96,12 @@ export const lambdaConfigs: LambdaConfig[] = [
       AWS_USER_RDS_NAME: process.env.AWS_USER_VIDEO_RDS_NAME as string,
       AWS_USER_VIDEO_RDS_ARN: process.env.AWS_USER_VIDEO_RDS_ARN as string,
       AWS_USER_VIDEO_RDS_NAME: process.env.AWS_USER_VIDEO_RDS_NAME as string,
-      AWS_USER_VIDEO_RDS_USERNAME: process.env.AWS_USER_VIDEO_RDS_USERNAME as string,
-      AWS_USER_VIDEO_RDS_PASSWORD: process.env.AWS_USER_VIDEO_RDS_PASSWORD as string,
-      AWS_USER_VIDEO_RDS_ENGINE: process.env.AWS_USER_VIDEO_RDS_ENGINE as string,
+      AWS_USER_VIDEO_RDS_USERNAME: process.env
+        .AWS_USER_VIDEO_RDS_USERNAME as string,
+      AWS_USER_VIDEO_RDS_PASSWORD: process.env
+        .AWS_USER_VIDEO_RDS_PASSWORD as string,
+      AWS_USER_VIDEO_RDS_ENGINE: process.env
+        .AWS_USER_VIDEO_RDS_ENGINE as string,
       AWS_USER_VIDEO_RDS_HOST: process.env.AWS_USER_VIDEO_RDS_HOST as string,
       AWS_USER_VIDEO_RDS_PORT: process.env.AWS_USER_VIDEO_RDS_PORT as string,
     },
