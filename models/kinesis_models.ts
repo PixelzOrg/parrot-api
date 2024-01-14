@@ -1,5 +1,4 @@
 import { StartingPosition } from '@aws-cdk/aws-lambda'
-import { FileProcessingStages } from '../lib/kinesis'
 
 export interface KinesisConfig {
   eventSourceArn: string

@@ -9,7 +9,7 @@
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
-    "lint": "eslint . --fix",
+    "lint": "eslint \"**/*.{ts,tsx}\"",
     "format": "prettier --write ."
   },
   "devDependencies": {

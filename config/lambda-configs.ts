@@ -1,12 +1,12 @@
 // config/lambda-configs.ts
 import 'dotenv/config'
 import * as lambda from '@aws-cdk/aws-lambda'
-import { S3_ACTIONS } from '../models/databases_models';
-import { KinesisPermissions } from '../models/kinesis_models';
+
+import { S3_ACTIONS } from '../models/databases_models'
+import { KinesisPermissions } from '../models/kinesis_models'
 import { LambdaConfig } from '../models/lambda_models'
 
-  /*
-  /
+/*/
   / API CONFIGURATIONS
   /
   */
@@ -20,7 +20,7 @@ export const lambdaConfigs: LambdaConfig[] = [
     policies: [],
     authType: lambda.FunctionUrlAuthType.NONE,
     corsConfig: {
-      allowMethods: [lambda.HttpMethod.GET],
+      allowMethods: ['GET'],
       allowHeaders: ['*'],
       allowOrigins: ['*'],
     },
@@ -116,20 +116,25 @@ export const lambdaConfigs: LambdaConfig[] = [
   */
 
   {
-    type: 'pipeline',
+    type: 'kinesis',
     name: 'Whisper Transcription Stage',
     path: './functions/pipe/whisper_transcription_stage/',
     authType: lambda.FunctionUrlAuthType.NONE,
     policies: [
       {
         actions: [
-          KinesisPermissions.GetRecords, 
+          KinesisPermissions.GetRecords,
           KinesisPermissions.ListStreams,
-          KinesisPermissions.PutRecord
+          KinesisPermissions.PutRecord,
         ],
         resources: [],
       },
     ],
+    corsConfig: {
+      allowMethods: [],
+      allowHeaders: [],
+      allowOrigins: [],
+    },
     secrets: {
       AWS_CACHE_RDS_NAME: process.env.AWS_CACHE_RDS_NAME as string,
       AWS_CACHE_RDS_USERNAME: process.env.AWS_CACHE_RDS_USERNAME as string,
@@ -138,7 +143,7 @@ export const lambdaConfigs: LambdaConfig[] = [
     kinesisStream: 'WhisperStage',
   },
   {
-    type: 'pipeline',
+    type: 'kinesis',
     name: 'Vision Analysis Stage',
     path: './functions/pipe/vision_analysis_stage/',
     authType: lambda.FunctionUrlAuthType.NONE,
@@ -147,12 +152,16 @@ export const lambdaConfigs: LambdaConfig[] = [
         actions: [
           KinesisPermissions.GetRecords,
           KinesisPermissions.PutRecord,
-          KinesisPermissions.ListStreams
+          KinesisPermissions.ListStreams,
         ],
         resources: [],
       },
     ],
-    corsConfig: null,
+    corsConfig: {
+      allowMethods: [],
+      allowHeaders: [],
+      allowOrigins: [],
+    },
     secrets: {
       AWS_CACHE_RDS_NAME: process.env.AWS_CACHE_RDS_NAME as string,
       AWS_CACHE_RDS_USERNAME: process.env.AWS_CACHE_RDS_USERNAME as string,
@@ -161,20 +170,24 @@ export const lambdaConfigs: LambdaConfig[] = [
     kinesisStream: 'VisionStage',
   },
   {
-    type: 'pipeline',
+    type: 'kinesis',
     name: 'ChatGPT Summary Stage',
     path: './functions/pipe/chatgpt_summary_stage/',
     authType: lambda.FunctionUrlAuthType.NONE,
     policies: [
       {
         actions: [
-          KinesisPermissions.GetRecords, 
-          KinesisPermissions.ListStreams
+          KinesisPermissions.GetRecords,
+          KinesisPermissions.ListStreams,
         ],
         resources: [],
       },
     ],
-    corsConfig: null,
+    corsConfig: {
+      allowMethods: [],
+      allowHeaders: [],
+      allowOrigins: [],
+    },
     secrets: {
       AWS_CACHE_RDS_NAME: process.env.AWS_CACHE_RDS_NAME as string,
       AWS_CACHE_RDS_USERNAME: process.env.AWS_CACHE_RDS_USERNAME as string,

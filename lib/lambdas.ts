@@ -3,37 +3,51 @@ import * as lambda from 'aws-cdk-lib/aws-lambda'
 import * as kinesis from 'aws-cdk-lib/aws-kinesis'
 import * as iam from 'aws-cdk-lib/aws-iam'
 
+import { verifyLambdaConfig } from '../models/lambda_models'
+import { ApiGateway } from './api_gateway'
 import { lambdaConfigs } from '../config/lambda-configs'
 import { Policy } from '../models/lambda_models'
 import { LambdaConfig } from '../models/lambda_models'
-import { FileProcessingStages } from './kinesis';
+import { FileProcessingStages } from './kinesis'
 
 export const LoadLambdaFunctions = (
-    stack: cdk.Stack, 
-    fileProcessingStages: FileProcessingStages
-  ) => {
-    for (const config of lambdaConfigs) {
-  
-      if (config.type == 'api') {
-        const apiRole: iam.Role = createApiLambdaRole(stack, config.name, config.policies ?? [])
-        const lambdaFunction = createLambdaFunction(stack, config, apiRole)
-        // @ts-ignore
-        api.addIntegration(config.corsConfig.allowMethods[0], config.path ?? '', lambdaFunction)
-      }
-
-      if (config.type == 'pipeline') {
-        // @ts-ignore
-        const kinesisStream: string = config.kinesisStream
-        const pipelineRole: iam.Role = createKinesisLambdaRole(stack, 
-          'KinesisLambdaRole',
-          config.kinesisStream ?? '',
-          fileProcessingStages, 
-          config.policies ?? [],
-        )
-        const lambdaFunction = createLambdaFunction(stack, config, pipelineRole)
-        addKinesisStreamToLambda(lambdaFunction, kinesisStream, fileProcessingStages)
-      }
+  stack: cdk.Stack,
+  fileProcessingStages: FileProcessingStages,
+  api: ApiGateway
+) => {
+  lambdaConfigs.forEach((config: LambdaConfig) => {
+    verifyLambdaConfig(config)
+    let role: iam.Role | null = null
+    console.log(config)
+    if (config.type === 'api') {
+      role = createApiLambdaRole(stack, `${config.name}Role`, config.policies)
+    } else if (config.type == 'kinesis') {
+      const kinesisStream = config.kinesisStream
+      role = createKinesisLambdaRole(
+        stack,
+        `${config.name}Role`,
+        kinesisStream ?? '',
+        fileProcessingStages,
+        config.policies
+      )
     }
+
+    const lambdaFunction = createLambdaFunction(stack, config, role!)
+
+    if (config.type === 'api') {
+      api.addIntegration(
+        config.corsConfig?.allowMethods?.[0] ?? '',
+        config.path ?? '',
+        lambdaFunction
+      )
+    } else if (config.type === 'kinesis') {
+      addKinesisStreamToLambda(
+        lambdaFunction,
+        config.kinesisStream ?? '',
+        fileProcessingStages
+      )
+    }
+  })
 }
 
 export function createLambdaFunction(
@@ -50,10 +64,9 @@ export function createLambdaFunction(
     timeout: cdk.Duration.seconds(10),
     architecture: lambda.Architecture.ARM_64,
     environment: config.secrets,
-    role: role
+    role: role,
   })
 }
-
 
 export function createApiLambdaRole(
   scope: cdk.Stack,
@@ -66,7 +79,7 @@ export function createApiLambdaRole(
 
   const role = new iam.Role(scope, name, {
     assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
-  });
+  })
 
   // Add policies to the role
   for (const policy of policies) {
@@ -75,11 +88,10 @@ export function createApiLambdaRole(
         actions: policy.actions,
         resources: policy.resources,
       })
-    );
+    )
   }
-  return role;
+  return role
 }
-
 
 export function addKinesisStreamToLambda(
   lambdaFunction: lambda.DockerImageFunction,
@@ -101,14 +113,11 @@ export function addKinesisStreamToLambda(
   }
 
   // Add an event source mapping to the Lambda function
-  lambdaFunction.addEventSourceMapping(
-    `${kinesisStreamName}EventSource`,
-    {
-      eventSourceArn: kinesisStream.streamArn,
-      batchSize: 1,
-      startingPosition: lambda.StartingPosition.TRIM_HORIZON,
-    }
-  )
+  lambdaFunction.addEventSourceMapping(`${kinesisStreamName}EventSource`, {
+    eventSourceArn: kinesisStream.streamArn,
+    batchSize: 1,
+    startingPosition: lambda.StartingPosition.TRIM_HORIZON,
+  })
 }
 
 export function createKinesisLambdaRole(
@@ -132,7 +141,7 @@ export function createKinesisLambdaRole(
   // Create a new IAM role
   const role = new iam.Role(scope, name, {
     assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
-  });
+  })
 
   // Add policies to the role
   for (const policy of policies) {
@@ -141,9 +150,8 @@ export function createKinesisLambdaRole(
         actions: policy.actions,
         resources: [kinesisStreamArn],
       })
-    );
+    )
   }
 
-  return role;
+  return role
 }
-
