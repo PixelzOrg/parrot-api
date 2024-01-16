@@ -10,13 +10,11 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v2
-    - run: echo "✅ Repository checked out successfully!"
 
     - name: Set up Node.js
       uses: actions/setup-node@v2
       with:
         node-version: '14'
-    - run: echo "✅ Node.js set up successfully!"
 
     - name: Cache Node.js modules
       uses: actions/cache@v2
@@ -25,17 +23,12 @@ jobs:
         key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
         restore-keys: |
           ${{ runner.os }}-node-
-    - run: echo "✅ Node.js modules cached successfully!"
 
     - name: Install Dependencies
-      run: |
-        npm install
-        echo "✅ Dependencies installed successfully!"
+      run: npm install
 
     - name: Lint Code
-      run: |
-        npm run lint
-        echo "✅ Code linted successfully!"
+      run: npm run lint
 
     - name: AWS CDK Deploy
       env:
@@ -45,4 +38,3 @@ jobs:
       run: |
         npm install -g aws-cdk
         cdk deploy --require-approval never
-        echo "✅ Deployment completed successfully!"
