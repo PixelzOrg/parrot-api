@@ -5,11 +5,11 @@ export interface LambdaConfig {
   type: string
   name: string
   url?: string
-  path?: string
+  path: string
   authType: lambda.FunctionUrlAuthType
-  policies: Policy[]
+  policy?: Policy
   corsConfig?: apigateway.CorsOptions
-  secrets?: {
+  secrets: {
     [key: string]: string
   }
   kinesisStream?: string
@@ -34,9 +34,6 @@ export const verifyLambdaConfig: ConfigVerificationCallback = (config) => {
   }
   if (!config.authType) {
     throw new Error('Auth Type is required to create API Lambda Function')
-  }
-  if (!config.policies) {
-    throw new Error('Policies are required to create API Lambda Function')
   }
   if (!config.corsConfig) {
     throw new Error('CORS Config is required to create API Lambda Function')
