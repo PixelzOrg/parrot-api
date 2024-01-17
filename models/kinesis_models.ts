@@ -13,6 +13,6 @@ export const KinesisPermissions = {
   GetShardIterator: 'kinesis:GetShardIterator',
   ListShards: 'kinesis:ListShards',
   ListStreams: 'kinesis:ListStreams',
-  PutRecords: 'kinesis:PutRecords',
   PutRecord: 'kinesis:PutRecord',
+  PutRecords: 'kinesis:PutRecords',
 }

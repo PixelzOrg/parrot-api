@@ -1,80 +1,104 @@
 import * as cdk from 'aws-cdk-lib'
-import * as lambda from 'aws-cdk-lib/aws-lambda'
-import * as ec2 from 'aws-cdk-lib/aws-ec2'
-
-import { ApiGateway } from './api-gateway-stack'
 import { PolicyStatement } from 'aws-cdk-lib/aws-iam'
-import { LambdaConfig } from '../models/lambda_models'
-import { lambdaConfigs } from '../config/lambda-configs'
-import { verifyLambdaConfig } from '../models/lambda_models'
+import * as lambda from 'aws-cdk-lib/aws-lambda'
 import { Construct } from 'constructs'
 
+import { lambdaConfigs } from '../config/lambda-config'
+import { ApiLambdaConfigs } from '../config/routes-lambdas-config'
+import {
+  LambdaStackProps,
+  verifyApiLambdaConfig,
+} from '../models/lambda_models'
+import { APILambdaConfig } from '../models/lambda_models'
+import { ApiGatewayStack } from './api-gateway-stack'
+import { S3BucketStack } from './s3-stack'
+import * as ec2 from 'aws-cdk-lib/aws-ec2'
+import * as rds from 'aws-cdk-lib/aws-rds';
+
 export class LambdaStack extends cdk.Stack {
-  constructor(
-    scope: Construct,
-    id: string,
-    api: ApiGateway,
-    props?: cdk.StackProps
-  ) {
+  private s3BucketStack: S3BucketStack
+  private apiStack: ApiGatewayStack
+  private RDS_VPC_ID: string
+  private RDS_VPC: ec2.IVpc
+
+  constructor(scope: Construct, id: string, props: LambdaStackProps) {
     super(scope, id, props)
+    this.s3BucketStack = props.s3BucketStack
+    this.apiStack = props.apiGatewayStack
+    this.RDS_VPC_ID = process.env.AWS_CACHE_RDS_VPC_ID as string
+    this.RDS_VPC = this.getRdsVpc(this)
 
-    /*
-    const S3_BUCKET_NAME = cdk.Fn.importValue('S3_Bucket_Name')
-    const S3_BUCKET_ARN = cdk.Fn.importValue('S3_Bucket_ARN')
-    */
-    this.loadLambdaFunctions(this, api)
-  }
-  private loadLambdaFunctions(stack: cdk.Stack, api: ApiGateway): void {
-    const RDS_VPC = this.getRdsVpc(stack)
-    for (const config of lambdaConfigs) {
-      verifyLambdaConfig(config)
-
-      let lambdaFunction: lambda.DockerImageFunction
-
-      if (config.vpcId) {
-        lambdaFunction = this.createLambdaFunctionWithRdsVPC(
-          stack,
-          config.name,
-          config.path,
-          config.secrets,
-          RDS_VPC
-        )
-      } else {
-        lambdaFunction = this.createLambdaFunction(
-          stack,
-          config.name,
-          config.path,
-          config.secrets
-        )
-      }
-
-      if (config.policy) {
-        this.addPoliciesToLambda(lambdaFunction, config)
-      }
-      if (config.type === 'api') {
-        api.addIntegration(
-          // @ts-expect-error - Neither of these will be undefined because we verify the config
-          config.corsConfig.allowMethods[0],
-          // @ts-expect-error - Read above
-          config.url,
-          lambdaFunction
-        )
-      }
-    }
+    this.initializeAPILambdas()
+    this.initializeServiceLambdas()
   }
 
-  private createLambdaFunction(
+  private initializeAPILambdas(): void {
+    ApiLambdaConfigs.forEach((apiLambdaConfig) => {
+      verifyApiLambdaConfig(apiLambdaConfig)
+
+      const ApiLambdaFunction = this.createApiLambdaFunction(
+        this,
+        apiLambdaConfig.name,
+        apiLambdaConfig.path,
+        apiLambdaConfig.secrets
+      )
+
+      this.configureApiRouteToLambda(ApiLambdaFunction, apiLambdaConfig)
+      this.attachPoliciesToLambda(
+        ApiLambdaFunction,
+        apiLambdaConfig.policy.actions,
+        apiLambdaConfig.policy.resources
+      )
+    })
+  }
+
+  private initializeServiceLambdas(): void {
+    lambdaConfigs.forEach((lambdaConfig) => {
+      // TODO: write verification for lambdaConfig
+      const serviceLambdaFunction = this.createLambdaFunctionWithRdsVPC(
+        this,
+        lambdaConfig.name,
+        lambdaConfig.path,
+        lambdaConfig.secrets
+      )
+      this.attachPoliciesToLambda(
+        serviceLambdaFunction,
+        lambdaConfig.policy.actions,
+        lambdaConfig.policy.resources
+      )
+    })
+  }
+
+  private createApiLambdaFunction(
     stack: cdk.Stack,
     name: string,
     path: string,
     secrets: Record<string, string>
   ): lambda.DockerImageFunction {
     return new lambda.DockerImageFunction(stack, name, {
-      functionName: name,
-      code: lambda.DockerImageCode.fromImageAsset(path),
-      timeout: cdk.Duration.seconds(10),
       architecture: lambda.Architecture.ARM_64,
+      code: lambda.DockerImageCode.fromImageAsset(path),
       environment: secrets,
+      functionName: name,
+      timeout: cdk.Duration.seconds(10),
+    })
+  }
+
+  private configureApiRouteToLambda(
+    lambdaFunction: lambda.DockerImageFunction,
+    config: APILambdaConfig
+  ): void {
+    this.apiStack.addIntegration(
+      // @ts-expect-error - TODO: fix this
+      config.corsConfig.allowMethods,
+      config.url,
+      lambdaFunction
+    )
+  }
+
+  private getRdsVpc(stack: cdk.Stack): ec2.IVpc {
+    return ec2.Vpc.fromLookup(stack, 'RDS_VPC', {
+      vpcId: this.RDS_VPC_ID,
     })
   }
 
@@ -82,40 +106,29 @@ export class LambdaStack extends cdk.Stack {
     stack: cdk.Stack,
     name: string,
     path: string,
-    secrets: Record<string, string>,
-    vpc: ec2.IVpc
+    secrets: Record<string, string>
   ): lambda.DockerImageFunction {
     return new lambda.DockerImageFunction(stack, name, {
-      functionName: name,
-      code: lambda.DockerImageCode.fromImageAsset(path),
-      timeout: cdk.Duration.seconds(10),
       architecture: lambda.Architecture.ARM_64,
+      code: lambda.DockerImageCode.fromImageAsset(path),
       environment: secrets,
-      vpc: vpc,
+      functionName: name,
+      timeout: cdk.Duration.seconds(10),
+      vpc: this.RDS_VPC,
     })
   }
 
-  private addPoliciesToLambda(
+  private attachPoliciesToLambda(
     lambdaFunction: lambda.DockerImageFunction,
-    config: LambdaConfig
+    actions: string[],
+    resources: string[]
   ): void {
-    if (!config.policy) {
-      throw new Error('Policies are required to add Policies to Lambda')
-    }
-
     lambdaFunction.addToRolePolicy(
       new PolicyStatement({
-        actions: config.policy.actions,
-        resources: config.policy.resources,
+        actions: actions,
+        resources: resources,
       })
     )
-  }
-
-  private getRdsVpc(stack: cdk.Stack): ec2.IVpc {
-    const vpc = ec2.Vpc.fromLookup(stack, 'RDS_VPC', {
-      vpcId: process.env.AWS_CACHE_RDS_VPC_ID,
-    })
-    return vpc
   }
 }
 

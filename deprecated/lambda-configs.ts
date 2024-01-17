@@ -1,57 +1,64 @@
 // config/lambda-configs.ts
 import 'dotenv/config'
+
 import * as lambda from '@aws-cdk/aws-lambda'
+
 import { S3_ACTIONS } from '../models/databases_models'
 import { LambdaConfig } from '../models/lambda_models'
 
 export const lambdaConfigs: LambdaConfig[] = [
   {
-    name: 'Health Check',
-    url: '/api/v1/',
-    path: './functions/health_check/',
     authType: lambda.FunctionUrlAuthType.NONE,
     corsConfig: {
-      allowMethods: [lambda.HttpMethod.GET],
       allowHeaders: ['*'],
+      allowMethods: [lambda.HttpMethod.GET],
       allowOrigins: ['*'],
     },
+    name: 'Health Check',
+    path: './functions/health_check/',
     secrets: {},
+    url: '/api/v1/',
   },
   {
-    name: 'Create User',
-    url: '/api/v1/users/create',
-    path: './functions/create_user/',
     authType: lambda.FunctionUrlAuthType.NONE,
+    corsConfig: {
+      allowHeaders: ['*'],
+      allowMethods: [lambda.HttpMethod.POST],
+      allowOrigins: ['*'],
+    },
+    name: 'Create User',
+    path: './functions/create_user/',
     policy: {
       actions: [S3_ACTIONS.PUT_OBJECT],
       resources: [process.env.AWS_USER_BUCKET_ARN as string],
     },
-    corsConfig: {
-      allowMethods: [lambda.HttpMethod.POST],
-      allowHeaders: ['*'],
-      allowOrigins: ['*'],
-    },
     secrets: {},
+    url: '/api/v1/users/create',
   },
   {
-    name: 'Delete User',
-    url: '/api/v1/users/delete',
-    path: './functions/delete_user/',
     authType: lambda.FunctionUrlAuthType.NONE,
+    corsConfig: {
+      allowHeaders: ['*'],
+      allowMethods: [lambda.HttpMethod.DELETE],
+      allowOrigins: ['*'],
+    },
+    name: 'Delete User',
+    path: './functions/delete_user/',
     policy: {
       actions: [S3_ACTIONS.DELETE_OBJECT],
       resources: [process.env.AWS_USER_BUCKET_ARN as string],
     },
-    corsConfig: {
-      allowMethods: [lambda.HttpMethod.DELETE],
-      allowHeaders: ['*'],
-      allowOrigins: ['*'],
-    },
     secrets: {},
+    url: '/api/v1/users/delete',
   },
   {
+    authType: lambda.FunctionUrlAuthType.NONE,
+    corsConfig: {
+      allowHeaders: ['*'],
+      allowMethods: [lambda.HttpMethod.POST],
+      allowOrigins: ['*'],
+    },
     name: 'Upload Video File',
-    url: '/api/v1/videos/upload/file',
     path: './functions/upload_video_file/',
     policy: [
       {
@@ -59,20 +66,20 @@ export const lambdaConfigs: LambdaConfig[] = [
         resources: [process.env.AWS_USER_BUCKET_ARN as string],
       },
     ],
-    authType: lambda.FunctionUrlAuthType.NONE,
-    corsConfig: {
-      allowMethods: [lambda.HttpMethod.POST],
-      allowHeaders: ['*'],
-      allowOrigins: ['*'],
-    },
     secrets: {
-      S3_BUCKET_NAME: process.env.AWS_USER_BUCKET_NAME as string,
       S3_BUCKET_ARN: process.env.AWS_USER_BUCKET_ARN as string,
+      S3_BUCKET_NAME: process.env.AWS_USER_BUCKET_NAME as string,
     },
+    url: '/api/v1/videos/upload/file',
   },
   {
+    authType: lambda.FunctionUrlAuthType.NONE,
+    corsConfig: {
+      allowHeaders: ['*'],
+      allowMethods: [lambda.HttpMethod.POST],
+      allowOrigins: ['*'],
+    },
     name: 'Upload Video Meta Data',
-    url: '/api/v1/videos/upload/meta-data',
     path: './functions/upload_video_meta_data/',
     policy: [
       {
@@ -80,127 +87,122 @@ export const lambdaConfigs: LambdaConfig[] = [
         resources: [process.env.AWS_USER_BUCKET_ARN as string],
       },
     ],
-    authType: lambda.FunctionUrlAuthType.NONE,
-    corsConfig: {
-      allowMethods: [lambda.HttpMethod.POST],
-      allowHeaders: ['*'],
-      allowOrigins: ['*'],
-    },
     secrets: {
       AWS_USER_RDS_ARN: process.env.AWS_USER_VIDE_RDS_ARN as string,
       AWS_USER_RDS_NAME: process.env.AWS_USER_VIDEO_RDS_NAME as string,
       AWS_USER_VIDEO_RDS_ARN: process.env.AWS_USER_VIDEO_RDS_ARN as string,
-      AWS_USER_VIDEO_RDS_NAME: process.env.AWS_USER_VIDEO_RDS_NAME as string,
-      AWS_USER_VIDEO_RDS_USERNAME: process.env
-        .AWS_USER_VIDEO_RDS_USERNAME as string,
-      AWS_USER_VIDEO_RDS_PASSWORD: process.env
-        .AWS_USER_VIDEO_RDS_PASSWORD as string,
       AWS_USER_VIDEO_RDS_ENGINE: process.env
         .AWS_USER_VIDEO_RDS_ENGINE as string,
       AWS_USER_VIDEO_RDS_HOST: process.env.AWS_USER_VIDEO_RDS_HOST as string,
+      AWS_USER_VIDEO_RDS_NAME: process.env.AWS_USER_VIDEO_RDS_NAME as string,
+      AWS_USER_VIDEO_RDS_PASSWORD: process.env
+        .AWS_USER_VIDEO_RDS_PASSWORD as string,
       AWS_USER_VIDEO_RDS_PORT: process.env.AWS_USER_VIDEO_RDS_PORT as string,
+      AWS_USER_VIDEO_RDS_USERNAME: process.env
+        .AWS_USER_VIDEO_RDS_USERNAME as string,
     },
+    url: '/api/v1/videos/upload/meta-data',
   },
   {
-    name: 'Delete Video',
-    url: '/api/v1/videos/delete',
-    path: './functions/delete_video/',
     authType: lambda.FunctionUrlAuthType.NONE,
-    policy: [
-      {
-        actions: [S3_ACTIONS.GET_OBJECT],
-        resources: [process.env.AWS_USER_BUCKET_ARN as string],
-      },
-    ],
     corsConfig: {
+      allowHeaders: ['*'],
       allowMethods: [lambda.HttpMethod.DELETE],
-      allowHeaders: ['*'],
       allowOrigins: ['*'],
     },
+    name: 'Delete Video',
+    path: './functions/delete_video/',
+    policy: [
+      {
+        actions: [S3_ACTIONS.GET_OBJECT],
+        resources: [process.env.AWS_USER_BUCKET_ARN as string],
+      },
+    ],
     secrets: {},
+    url: '/api/v1/videos/delete',
   },
   {
+    authType: lambda.FunctionUrlAuthType.NONE,
+    corsConfig: {
+      allowHeaders: ['*'],
+      allowMethods: [lambda.HttpMethod.POST],
+      allowOrigins: ['*'],
+    },
     name: 'Fetch Video',
-    url: '/api/v1/videos/request',
     path: './functions/fetch_video/',
-    authType: lambda.FunctionUrlAuthType.NONE,
     policy: [
       {
         actions: [S3_ACTIONS.GET_OBJECT],
         resources: [process.env.AWS_USER_BUCKET_ARN as string],
       },
     ],
-    corsConfig: {
-      allowMethods: [lambda.HttpMethod.POST],
-      allowHeaders: ['*'],
-      allowOrigins: ['*'],
-    },
     secrets: {
-      RDS_DATABASE_NAME: process.env.AWS_RDS_DATABASE_NAME as string,
       RDS_DATABASE_ARN: process.env.AWS_RDS_DATABASE_ARN as string,
+      RDS_DATABASE_NAME: process.env.AWS_RDS_DATABASE_NAME as string,
     },
+    url: '/api/v1/videos/request',
   },
   {
+    authType: lambda.FunctionUrlAuthType.NONE,
+    corsConfig: {
+      allowHeaders: ['*'],
+      allowMethods: [lambda.HttpMethod.POST],
+      allowOrigins: ['*'],
+    },
     name: 'Fetch All Videos',
-    url: '/api/v1/videos/request/all',
     path: './functions/fetch_all_videos/',
-    authType: lambda.FunctionUrlAuthType.NONE,
     policy: [
       {
         actions: [S3_ACTIONS.GET_OBJECT],
         resources: [process.env.AWS_USER_BUCKET_ARN as string],
       },
     ],
-    corsConfig: {
-      allowMethods: [lambda.HttpMethod.POST],
-      allowHeaders: ['*'],
-      allowOrigins: ['*'],
-    },
     secrets: {
-      RDS_DATABASE_NAME: process.env.AWS_RDS_DATABASE_NAME as string,
       RDS_DATABASE_ARN: process.env.AWS_RDS_DATABASE_ARN as string,
+      RDS_DATABASE_NAME: process.env.AWS_RDS_DATABASE_NAME as string,
     },
+    url: '/api/v1/videos/request/all',
   },
   {
+    authType: lambda.FunctionUrlAuthType.NONE,
+    corsConfig: {
+      allowHeaders: ['*'],
+      allowMethods: [lambda.HttpMethod.POST],
+      allowOrigins: ['*'],
+    },
     name: 'Fetch Videos by Date',
-    url: '/api/v1/videos/request/date',
     path: './functions/fetch_videos_by_date/',
-    authType: lambda.FunctionUrlAuthType.NONE,
     policy: [
       {
         actions: [S3_ACTIONS.GET_OBJECT],
         resources: [process.env.AWS_USER_BUCKET_ARN as string],
       },
     ],
-    corsConfig: {
-      allowMethods: [lambda.HttpMethod.POST],
-      allowHeaders: ['*'],
-      allowOrigins: ['*'],
-    },
     secrets: {
-      RDS_DATABASE_NAME: process.env.AWS_RDS_DATABASE_NAME as string,
       RDS_DATABASE_ARN: process.env.AWS_RDS_DATABASE_ARN as string,
+      RDS_DATABASE_NAME: process.env.AWS_RDS_DATABASE_NAME as string,
     },
+    url: '/api/v1/videos/request/date',
   },
   {
-    name: 'Fetch Videos by Date Range',
-    url: '/api/v1/videos/request/date-range',
-    path: './functions/fetch_videos_by_date_range/',
     authType: lambda.FunctionUrlAuthType.NONE,
+    corsConfig: {
+      allowHeaders: ['*'],
+      allowMethods: [lambda.HttpMethod.POST],
+      allowOrigins: ['*'],
+    },
+    name: 'Fetch Videos by Date Range',
+    path: './functions/fetch_videos_by_date_range/',
     policy: [
       {
         actions: [S3_ACTIONS.GET_OBJECT],
         resources: [process.env.AWS_USER_BUCKET_ARN as string],
       },
     ],
-    corsConfig: {
-      allowMethods: [lambda.HttpMethod.POST],
-      allowHeaders: ['*'],
-      allowOrigins: ['*'],
-    },
     secrets: {
-      RDS_DATABASE_NAME: process.env.AWS_RDS_DATABASE_NAME as string,
       RDS_DATABASE_ARN: process.env.AWS_RDS_DATABASE_ARN as string,
+      RDS_DATABASE_NAME: process.env.AWS_RDS_DATABASE_NAME as string,
     },
+    url: '/api/v1/videos/request/date-range',
   },
 ]

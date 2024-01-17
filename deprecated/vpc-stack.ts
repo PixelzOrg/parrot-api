@@ -1,6 +1,5 @@
 import * as cdk from 'aws-cdk-lib'
 import * as ec2 from 'aws-cdk-lib/aws-ec2'
-
 import { Construct } from 'constructs'
 
 export class VpcStack extends cdk.Stack {
@@ -13,6 +12,7 @@ export class VpcStack extends cdk.Stack {
     this.vpc = new ec2.Vpc(this, 'VpcStack', {
       cidr: '10.0.0.0/16',
       maxAzs: 2,
+      natGateways: 0,
       subnetConfiguration: [
         {
           cidrMask: 26,
@@ -20,13 +20,12 @@ export class VpcStack extends cdk.Stack {
           subnetType: ec2.SubnetType.PRIVATE_ISOLATED,
         },
       ],
-      natGateways: 0,
     })
 
     this.securityGroup = new ec2.SecurityGroup(this, 'parrot-security-group', {
-      vpc: this.vpc,
       allowAllOutbound: false,
       securityGroupName: 'ParrotSecurityGroup',
+      vpc: this.vpc,
     })
 
     const PORT = process.env.AWS_RDS_CACHE_PORT as string

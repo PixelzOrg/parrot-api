@@ -1,4 +1,5 @@
 import { RemovalPolicy } from 'aws-cdk-lib'
+import * as cdk from 'aws-cdk-lib'
 import {
   LambdaIntegration,
   LogGroupLogDestination,
@@ -7,31 +8,43 @@ import {
 import { IFunction } from 'aws-cdk-lib/aws-lambda'
 import { LogGroup, RetentionDays } from 'aws-cdk-lib/aws-logs'
 import { Construct } from 'constructs'
-import * as cdk from 'aws-cdk-lib'
 
-export class ApiGateway extends cdk.Stack {
+export class ApiGatewayStack extends cdk.Stack {
   public api: RestApi
+  private logGroup: LogGroup
 
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props)
+    this.logGroup = this.createLogGroup(this)
+    this.api = this.createRestAPI(this, this.logGroup)
+  }
 
-    const logGroup = new LogGroup(this, 'parrot-api-log-group', {
-      logGroupName: 'parrot-api-gateway',
-      retention: RetentionDays.SIX_MONTHS,
-      removalPolicy: RemovalPolicy.DESTROY,
-    })
-
-    this.api = new RestApi(this, 'parrot-api', {
+  private createRestAPI(stack: cdk.Stack, logGroup: LogGroup): RestApi {
+    return new RestApi(this, 'parrot-api', {
       cloudWatchRole: true,
-      restApiName: 'parrot-api',
       deployOptions: {
         accessLogDestination: new LogGroupLogDestination(logGroup),
       },
+      restApiName: 'parrot-api',
     })
   }
 
-  addIntegration(method: string, url: string, lambda: IFunction) {
+  private createLogGroup(stack: cdk.Stack): LogGroup {
+    return new LogGroup(this, 'parrot-api-log-group', {
+      logGroupName: 'parrot-api-gateway',
+      removalPolicy: RemovalPolicy.DESTROY,
+      retention: RetentionDays.SIX_MONTHS,
+    })
+  }
+
+  public addIntegration(
+    allowMethods: string[],
+    url: string,
+    lambda: IFunction
+  ) {
     const resource = this.api.root.resourceForPath(url)
+    console.log(url, lambda.functionName)
+    const method = allowMethods[0]
     resource.addMethod(method, new LambdaIntegration(lambda))
   }
 }

@@ -1,13 +1,13 @@
 export const S3_ACTIONS = {
-  PUT_OBJECT: 's3:PutObject',
+  DELETE_OBJECT: 's3:DeleteObject',
   GET_OBJECT: 's3:GetObject',
   LIST_BUCKET: 's3:ListBucket',
-  DELETE_OBJECT: 's3:DeleteObject',
+  PUT_OBJECT: 's3:PutObject',
 }
 
 export const RDS_ACTIONS = {
-  SELECT: 'rds:Select',
-  INSERT: 'rds:Insert',
-  UPDATE: 'rds:Update',
   DELETE: 'rds:Delete',
+  INSERT: 'rds:Insert',
+  SELECT: 'rds:Select',
+  UPDATE: 'rds:Update',
 }

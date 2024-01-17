@@ -1,19 +1,25 @@
-import * as lambda from '@aws-cdk/aws-lambda'
 import * as apigateway from '@aws-cdk/aws-apigateway'
+import * as lambda from '@aws-cdk/aws-lambda'
+import * as cdk from 'aws-cdk-lib'
+
+import { ApiGatewayStack } from '../lib/api-gateway-stack'
+import { S3BucketStack } from '../lib/s3-stack'
+
+// LAMBDA CONFIG MODELS
 
 export interface LambdaConfig {
-  type: string
   name: string
-  url?: string
   path: string
   authType: lambda.FunctionUrlAuthType
-  policy?: Policy
-  corsConfig?: apigateway.CorsOptions
+  policy: Policy
   secrets: {
     [key: string]: string
   }
-  kinesisStream?: string
-  vpcId?: string | undefined
+}
+
+export interface APILambdaConfig extends LambdaConfig {
+  url: string
+  corsConfig: apigateway.CorsOptions
 }
 
 export interface Policy {
@@ -21,25 +27,29 @@ export interface Policy {
   resources: string[]
 }
 
-type ConfigVerificationCallback = (config: LambdaConfig) => void
+export interface LambdaStackProps extends cdk.StackProps {
+  apiGatewayStack: ApiGatewayStack
+  s3BucketStack: S3BucketStack
+  rdsVpcId: string
+}
 
-export const verifyLambdaConfig: ConfigVerificationCallback = (config) => {
-  if (!config) {
-    throw new Error('Config is required to create API Lambda Function')
-  }
-  if (!config.name) {
-    throw new Error('Name is required to create API Lambda Function')
-  }
-  if (!config.type) {
-    throw new Error('Type is required to create API Lambda Function')
-  }
+export function verifyApiLambdaConfig(config: APILambdaConfig): void {
   if (!config.authType) {
-    throw new Error('Auth Type is required to create API Lambda Function')
+    throw new Error(`Lambda ${config.name} is missing authType`)
+  }
+  if (!config.policy) {
+    throw new Error(`Lambda ${config.name} is missing policy`)
   }
   if (!config.corsConfig) {
-    throw new Error('CORS Config is required to create API Lambda Function')
+    throw new Error(`Lambda ${config.name} is missing corsConfig`)
   }
-  if (!config.corsConfig.allowHeaders) {
-    throw new Error('You must specify at least one header to allow CORS')
+  if (!config.url) {
+    throw new Error(`Lambda ${config.name} is missing url`)
+  }
+  if (!config.path) {
+    throw new Error(`Lambda ${config.name} is missing path`)
+  }
+  if (!config.name) {
+    throw new Error(`Lambda ${config.name} is missing name`)
   }
 }

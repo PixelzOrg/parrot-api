@@ -11,20 +11,20 @@ export class FileProcessingStages extends Construct {
 
     // Transcription Stage Stream
     this.WhisperStage = new kinesis.Stream(this, 'transcriptionStream', {
-      streamName: 'transcription-stream',
       shardCount: 1,
+      streamName: 'transcription-stream',
     })
 
     // Video Context Analysis Stage
     this.VisionStage = new kinesis.Stream(this, 'visionStream', {
-      streamName: 'vision-stream',
       shardCount: 1,
+      streamName: 'vision-stream',
     })
 
     // Summary Stage
     this.ChatGPTSummaryStage = new kinesis.Stream(this, 'summaryStream', {
-      streamName: 'summary-stream',
       shardCount: 1,
+      streamName: 'summary-stream',
     })
   }
 }
