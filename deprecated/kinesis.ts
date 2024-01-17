@@ -6,7 +6,7 @@ export class FileProcessingStages extends Construct {
   public readonly VisionStage: kinesis.Stream
   public readonly ChatGPTSummaryStage: kinesis.Stream
 
-  constructor(scope: Construct, id: string, props?: kinesis.StreamProps) {
+  constructor(scope: Construct, id: string) {
     super(scope, id)
 
     // Transcription Stage Stream

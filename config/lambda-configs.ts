@@ -13,7 +13,7 @@ import { LambdaConfig } from '../models/lambda_models'
 export const lambdaConfigs: LambdaConfig[] = [
   {
     type: 'api',
-    name: 'Health Check',
+    name: 'Health-Check',
     url: '/api/v1/',
     path: './functions/routes/health_check/',
     authType: lambda.FunctionUrlAuthType.NONE,
@@ -22,11 +22,13 @@ export const lambdaConfigs: LambdaConfig[] = [
       allowHeaders: ['*'],
       allowOrigins: ['*'],
     },
-    secrets: {},
+    secrets: {
+      S3_BUCKET_NAME: process.env.AWS_USER_BUCKET_NAME as string,
+    },
   },
   {
     type: 'api',
-    name: 'Upload Video File',
+    name: 'Upload-Video-File',
     url: '/api/v1/capture/upload/upload_file',
     path: './functions/routes/upload_file/',
     policy: {
@@ -45,7 +47,7 @@ export const lambdaConfigs: LambdaConfig[] = [
   },
   {
     type: 'api',
-    name: 'Start Multipart_Upload',
+    name: 'Start-Multipart-Upload',
     url: '/api/v1/capture/upload/start_multipart_upload',
     path: './functions/routes/start_multipart_upload/',
     policy: {
@@ -60,11 +62,12 @@ export const lambdaConfigs: LambdaConfig[] = [
     },
     secrets: {
       S3_BUCKET_NAME: process.env.AWS_USER_BUCKET_NAME as string,
+      S3_BUCKET_ARN: process.env.AWS_USER_BUCKET_ARN as string,
     },
   },
   {
     type: 'api',
-    name: 'Append Multipart Upload',
+    name: 'Append-Multipart-Upload',
     url: '/api/v1/capture/upload/append_multipart_upload',
     path: './functions/routes/append_multipart_upload/',
     policy: {
@@ -79,11 +82,12 @@ export const lambdaConfigs: LambdaConfig[] = [
     },
     secrets: {
       S3_BUCKET_NAME: process.env.AWS_USER_BUCKET_NAME as string,
+      S3_BUCKET_ARN: process.env.AWS_USER_BUCKET_ARN as string,
     },
   },
   {
     type: 'api',
-    name: 'Complete Multipart Upload',
+    name: 'Complete-Multipart-Upload',
     url: '/api/v1/capture/upload/complete_multipart_upload',
     path: './functions/routes/complete_multipart_upload/',
     authType: lambda.FunctionUrlAuthType.NONE,
@@ -107,7 +111,7 @@ export const lambdaConfigs: LambdaConfig[] = [
 
   {
     type: 'pipeline',
-    name: 'Whisper Transcription Stage',
+    name: 'Whisper-Transcription-Stage',
     path: './functions/pipe/whisper_transcription_stage/',
     authType: lambda.FunctionUrlAuthType.NONE,
     policy: {
@@ -120,15 +124,18 @@ export const lambdaConfigs: LambdaConfig[] = [
       allowOrigins: [],
     },
     secrets: {
+      S3_BUCKET_NAME: process.env.AWS_USER_BUCKET_NAME as string,
+      S3_BUCKET_ARN: process.env.AWS_USER_BUCKET_ARN as string,
       AWS_CACHE_RDS_NAME: process.env.AWS_CACHE_RDS_NAME as string,
       AWS_CACHE_RDS_USERNAME: process.env.AWS_CACHE_RDS_USERNAME as string,
       AWS_CACHE_RDS_PASSWORD: process.env.AWS_USER_VIDEO_RDS_PASSWORD as string,
     },
     kinesisStream: 'WhisperStage',
+    vpcId: process.env.AWS_CACHE_RDS_VPC_ID as string,
   },
   {
     type: 'pipeline',
-    name: 'Vision Analysis Stage',
+    name: 'Vision-Analysis-Stage',
     path: './functions/pipe/vision_analysis_stage/',
     authType: lambda.FunctionUrlAuthType.NONE,
     policy: {
@@ -142,15 +149,17 @@ export const lambdaConfigs: LambdaConfig[] = [
     },
     secrets: {
       S3_BUCKET_NAME: process.env.AWS_USER_BUCKET_NAME as string,
+      S3_BUCKET_ARN: process.env.AWS_USER_BUCKET_ARN as string,
       AWS_CACHE_RDS_NAME: process.env.AWS_CACHE_RDS_NAME as string,
       AWS_CACHE_RDS_USERNAME: process.env.AWS_CACHE_RDS_USERNAME as string,
       AWS_CACHE_RDS_PASSWORD: process.env.AWS_USER_VIDEO_RDS_PASSWORD as string,
     },
     kinesisStream: 'VisionStage',
+    vpcId: process.env.AWS_CACHE_RDS_VPC_ID as string,
   },
   {
     type: 'pipeline',
-    name: 'ChatGPT Summary Stage',
+    name: 'ChatGPT-Summary-Stage',
     path: './functions/pipe/chatgpt_summary_stage/',
     authType: lambda.FunctionUrlAuthType.NONE,
     policy: {
@@ -164,10 +173,12 @@ export const lambdaConfigs: LambdaConfig[] = [
     },
     secrets: {
       S3_BUCKET_NAME: process.env.AWS_USER_BUCKET_NAME as string,
+      S3_BUCKET_ARN: process.env.AWS_USER_BUCKET_ARN as string,
       AWS_CACHE_RDS_NAME: process.env.AWS_CACHE_RDS_NAME as string,
       AWS_CACHE_RDS_USERNAME: process.env.AWS_CACHE_RDS_USERNAME as string,
       AWS_CACHE_RDS_PASSWORD: process.env.AWS_USER_VIDEO_RDS_PASSWORD as string,
     },
     kinesisStream: 'ChatGPTSummaryStage',
+    vpcId: process.env.AWS_CACHE_RDS_VPC_ID as string,
   },
 ]

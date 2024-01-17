@@ -3,7 +3,7 @@ import os
 import uuid
 import boto3
 
-    
+
 BUCKET_NAME: str = os.environ.get('S3_BUCKET_NAME')
 
 def handler(event, context):

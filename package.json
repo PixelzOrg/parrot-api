@@ -8,9 +8,9 @@
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
-    "cdk": "cdk",
-    "lint": "eslint \"**/*.{ts,tsx}\"",
-    "format": "prettier --write ."
+    "lint": "prettier --write . && eslint \"**/*.{ts,tsx}\"",
+    "strap": "cdk bootstrap",
+    "deploy": "cdk deploy --all --verbose"
   },
   "devDependencies": {
     "@types/jest": "^29.5.11",

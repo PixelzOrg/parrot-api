@@ -13,6 +13,7 @@ export interface LambdaConfig {
     [key: string]: string
   }
   kinesisStream?: string
+  vpcId?: string | undefined
 }
 
 export interface Policy {
