@@ -20,8 +20,8 @@ export class RdsStack extends cdk.Stack {
 
   private outputRdsVpcId(): void {
     new cdk.CfnOutput(this, 'VpcId', {
-      value: this.rdsVPC.vpcId,
       exportName: 'RdsVpcId',
+      value: this.rdsVPC.vpcId,
     })
   }
 

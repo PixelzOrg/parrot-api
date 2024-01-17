@@ -1,6 +1,8 @@
 import * as cdk from 'aws-cdk-lib'
+import * as ec2 from 'aws-cdk-lib/aws-ec2'
 import { PolicyStatement } from 'aws-cdk-lib/aws-iam'
 import * as lambda from 'aws-cdk-lib/aws-lambda'
+import * as rds from 'aws-cdk-lib/aws-rds'
 import { Construct } from 'constructs'
 
 import { lambdaConfigs } from '../config/lambda-config'
@@ -12,8 +14,6 @@ import {
 import { APILambdaConfig } from '../models/lambda_models'
 import { ApiGatewayStack } from './api-gateway-stack'
 import { S3BucketStack } from './s3-stack'
-import * as ec2 from 'aws-cdk-lib/aws-ec2'
-import * as rds from 'aws-cdk-lib/aws-rds';
 
 export class LambdaStack extends cdk.Stack {
   private s3BucketStack: S3BucketStack

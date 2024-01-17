@@ -1,5 +1,6 @@
-import * as lambda from '@aws-cdk/aws-lambda'
 import 'dotenv/config'
+
+import * as lambda from '@aws-cdk/aws-lambda'
 
 import { S3_ACTIONS } from '../models/databases_models'
 import { LambdaConfig } from '../models/lambda_models'
