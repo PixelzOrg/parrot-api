@@ -4,6 +4,7 @@ import * as s3 from 'aws-cdk-lib/aws-s3'
 
 import { ApiGatewayStack } from '../lib/api-gateway-stack'
 import { S3BucketStack } from '../lib/s3-stack'
+import { VpcStack } from '../lib/vpc-stack'
 
 // LAMBDA CONFIG MODELS
 
@@ -28,6 +29,7 @@ export interface Policy {
 export interface LambdaStackProps extends cdk.StackProps {
   apiGatewayStack: ApiGatewayStack
   s3BucketStack: S3BucketStack
+  vpcStack: VpcStack
 }
 
 export function verifyLambdaConfig(config: LambdaConfig): void {

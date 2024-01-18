@@ -4,6 +4,7 @@ import * as cdk from 'aws-cdk-lib'
 import { ApiGatewayStack } from '../lib/api-gateway-stack'
 import { LambdaStack } from '../lib/lambda-stack'
 import { S3BucketStack } from '../lib/s3-stack'
+import { VpcStack } from '../lib/vpc-stack'
 
 const app = new cdk.App()
 // Here we instantiate the stacks that we will be using
@@ -19,6 +20,14 @@ const app = new cdk.App()
 const defaultAccount = process.env.CDK_DEFAULT_ACCOUNT as string
 const defaultRegion = process.env.CDK_DEFAULT_REGION as string
 
+
+// Instantiate the VPC Stack
+const vpcStack = new VpcStack(app, 'VpcStack', {
+  env: {
+    account: defaultAccount,
+    region: defaultRegion,
+  },
+})
 // Instantiate the S3 Bucket Stack
 const s3BucketStack = new S3BucketStack(app, 'S3BucketStack', {
   env: {
@@ -41,4 +50,5 @@ const lambdaStack = new LambdaStack(app, 'LambdaStack', {
     region: defaultRegion,
   },
   s3BucketStack: s3BucketStack,
+  vpcStack: vpcStack,
 })
