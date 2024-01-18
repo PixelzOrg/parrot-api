@@ -5,6 +5,7 @@ import { ApiGatewayStack } from '../lib/api-gateway-stack'
 import { LambdaStack } from '../lib/lambda-stack'
 import { S3BucketStack } from '../lib/s3-stack'
 import { VpcStack } from '../lib/vpc-stack'
+import { SqsStack } from '../lib/sqs-queue-stack'
 
 const app = new cdk.App()
 // Here we instantiate the stacks that we will be using
@@ -23,6 +24,13 @@ const defaultRegion = process.env.CDK_DEFAULT_REGION as string
 
 // Instantiate the VPC Stack
 const vpcStack = new VpcStack(app, 'VpcStack', {
+  env: {
+    account: defaultAccount,
+    region: defaultRegion,
+  },
+})
+// Instantiate the SQS Queue Stack
+const sqsStack = new SqsStack(app, 'SqsStack', {
   env: {
     account: defaultAccount,
     region: defaultRegion,

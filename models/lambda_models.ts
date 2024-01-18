@@ -5,6 +5,7 @@ import * as s3 from 'aws-cdk-lib/aws-s3'
 import { ApiGatewayStack } from '../lib/api-gateway-stack'
 import { S3BucketStack } from '../lib/s3-stack'
 import { VpcStack } from '../lib/vpc-stack'
+import { SqsStack } from '../lib/sqs-queue-stack'
 
 // LAMBDA CONFIG MODELS
 

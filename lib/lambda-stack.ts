@@ -11,17 +11,20 @@ import { LambdaStackProps, verifyLambdaConfig } from '../models/lambda_models'
 import { ApiGatewayStack } from './api-gateway-stack'
 import { S3BucketStack } from './s3-stack'
 import { VpcStack } from './vpc-stack'
+import { SqsStack } from './sqs-queue-stack';
 
 export class LambdaStack extends cdk.Stack {
   private s3BucketStack: S3BucketStack
   private apiStack: ApiGatewayStack
   private vpcStack: VpcStack
+  private sqsStack: SqsStack
 
   constructor(scope: Construct, id: string, props: LambdaStackProps) {
     super(scope, id, props)
     this.s3BucketStack = props.s3BucketStack
     this.apiStack = props.apiGatewayStack
     this.vpcStack = props.vpcStack
+    this.sqsStack = props.sqsStack
 
     this.initializeLambdas()
   }
@@ -107,4 +110,6 @@ export class LambdaStack extends cdk.Stack {
       })
     )
   }
+
+  private 
 }
