@@ -1,6 +1,6 @@
 import * as apigateway from '@aws-cdk/aws-apigateway'
-import * as lambda from '@aws-cdk/aws-lambda'
 import * as cdk from 'aws-cdk-lib'
+import * as s3 from 'aws-cdk-lib/aws-s3'
 
 import { ApiGatewayStack } from '../lib/api-gateway-stack'
 import { S3BucketStack } from '../lib/s3-stack'
@@ -9,17 +9,15 @@ import { S3BucketStack } from '../lib/s3-stack'
 
 export interface LambdaConfig {
   name: string
+  url?: string
+  queueName?: string
   path: string
-  authType: lambda.FunctionUrlAuthType
   policy: Policy
   secrets: {
     [key: string]: string
   }
-}
-
-export interface APILambdaConfig extends LambdaConfig {
-  url: string
-  corsConfig: apigateway.CorsOptions
+  corsConfig?: apigateway.CorsOptions
+  s3Events?: s3.EventType[]
 }
 
 export interface Policy {
@@ -30,26 +28,16 @@ export interface Policy {
 export interface LambdaStackProps extends cdk.StackProps {
   apiGatewayStack: ApiGatewayStack
   s3BucketStack: S3BucketStack
-  rdsVpcId: string
 }
 
-export function verifyApiLambdaConfig(config: APILambdaConfig): void {
-  if (!config.authType) {
-    throw new Error(`Lambda ${config.name} is missing authType`)
-  }
+export function verifyLambdaConfig(config: LambdaConfig): void {
   if (!config.policy) {
     throw new Error(`Lambda ${config.name} is missing policy`)
-  }
-  if (!config.corsConfig) {
-    throw new Error(`Lambda ${config.name} is missing corsConfig`)
-  }
-  if (!config.url) {
-    throw new Error(`Lambda ${config.name} is missing url`)
   }
   if (!config.path) {
     throw new Error(`Lambda ${config.name} is missing path`)
   }
   if (!config.name) {
-    throw new Error(`Lambda ${config.name} is missing name`)
+    throw new Error(`Lambda is missing name`)
   }
 }

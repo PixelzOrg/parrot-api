@@ -20,7 +20,7 @@ export class ApiGatewayStack extends cdk.Stack {
   }
 
   private createRestAPI(stack: cdk.Stack, logGroup: LogGroup): RestApi {
-    return new RestApi(this, 'parrot-api', {
+    return new RestApi(stack, 'parrot-api', {
       cloudWatchRole: true,
       deployOptions: {
         accessLogDestination: new LogGroupLogDestination(logGroup),
@@ -30,7 +30,7 @@ export class ApiGatewayStack extends cdk.Stack {
   }
 
   private createLogGroup(stack: cdk.Stack): LogGroup {
-    return new LogGroup(this, 'parrot-api-log-group', {
+    return new LogGroup(stack, 'parrot-api-log-group', {
       logGroupName: 'parrot-api-gateway',
       removalPolicy: RemovalPolicy.DESTROY,
       retention: RetentionDays.SIX_MONTHS,

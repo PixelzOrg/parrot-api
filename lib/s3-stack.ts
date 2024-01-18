@@ -1,6 +1,5 @@
 import * as cdk from 'aws-cdk-lib'
 import * as s3 from 'aws-cdk-lib/aws-s3'
-import { IBucket } from 'aws-cdk-lib/aws-s3'
 import { Construct } from 'constructs'
 
 export class S3BucketStack extends cdk.Stack {

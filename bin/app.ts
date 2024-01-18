@@ -3,7 +3,6 @@ import * as cdk from 'aws-cdk-lib'
 
 import { ApiGatewayStack } from '../lib/api-gateway-stack'
 import { LambdaStack } from '../lib/lambda-stack'
-import { RdsStack } from '../lib/rds-stack'
 import { S3BucketStack } from '../lib/s3-stack'
 
 const app = new cdk.App()
@@ -17,19 +16,29 @@ const app = new cdk.App()
 // 6. Cloudfront Stack    (Serving) (TODO:)
 // 7. Route53 Stack       (Domain) (TODO:)
 
-// Instantiate the RDS Stack
-const rdsStack = new RdsStack(app, 'RDSStack', {})
+const defaultAccount = process.env.CDK_DEFAULT_ACCOUNT as string
+const defaultRegion = process.env.CDK_DEFAULT_REGION as string
+
 // Instantiate the S3 Bucket Stack
-const s3BucketStack = new S3BucketStack(app, 'S3BucketStack', {})
+const s3BucketStack = new S3BucketStack(app, 'S3BucketStack', {
+  env: {
+    account: defaultAccount,
+    region: defaultRegion,
+  },
+})
 // Instantiate the API Gateway Stack
-const apiGatewayStack = new ApiGatewayStack(app, 'ApiGatewayStack', {})
+const apiGatewayStack = new ApiGatewayStack(app, 'ApiGatewayStack', {
+  env: {
+    account: defaultAccount,
+    region: defaultRegion,
+  },
+})
 // Instantiate the Lambda Stack
 const lambdaStack = new LambdaStack(app, 'LambdaStack', {
   apiGatewayStack: apiGatewayStack,
   env: {
-    account: process.env.CDK_DEFAULT_ACCOUNT,
-    region: process.env.CDK_DEFAULT_REGION,
+    account: defaultAccount,
+    region: defaultRegion,
   },
-  rdsVpcId: cdk.Fn.importValue('RdsVpcId'),
   s3BucketStack: s3BucketStack,
 })
