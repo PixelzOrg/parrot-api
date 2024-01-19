@@ -10,21 +10,15 @@ import { LambdaConfig } from '../models/lambda_models'
 import { LambdaStackProps, verifyLambdaConfig } from '../models/lambda_models'
 import { ApiGatewayStack } from './api-gateway-stack'
 import { S3BucketStack } from './s3-stack'
-import { VpcStack } from './vpc-stack'
-import { SqsStack } from './sqs-queue-stack';
 
 export class LambdaStack extends cdk.Stack {
   private s3BucketStack: S3BucketStack
   private apiStack: ApiGatewayStack
-  private vpcStack: VpcStack
-  private sqsStack: SqsStack
 
   constructor(scope: Construct, id: string, props: LambdaStackProps) {
     super(scope, id, props)
     this.s3BucketStack = props.s3BucketStack
     this.apiStack = props.apiGatewayStack
-    this.vpcStack = props.vpcStack
-    this.sqsStack = props.sqsStack
 
     this.initializeLambdas()
   }
@@ -45,8 +39,12 @@ export class LambdaStack extends cdk.Stack {
         this.configureApiRouteToLambda(lambdaFunction, config)
       }
 
-      if (config.s3Events) {
-        this.addS3EventSourceToLambda(lambdaFunction, config.s3Events)
+      if (config.eventSource) {
+        this.addS3EventSourceToLambda(
+          lambdaFunction,
+          config.eventSource.events,
+          config.eventSource.filters
+        )
       }
 
       this.attachPoliciesToLambda(
@@ -59,12 +57,14 @@ export class LambdaStack extends cdk.Stack {
 
   private addS3EventSourceToLambda(
     lambdaFunction: lambda.DockerImageFunction,
-    events: s3.EventType[]
+    events: s3.EventType[],
+    filters: s3.NotificationKeyFilter[]
   ): void {
     const s3EventSource = new lambdaEventSources.S3EventSource(
       this.s3BucketStack.s3Bucket,
       {
         events: events,
+        filters: filters,
       }
     )
     lambdaFunction.addEventSource(s3EventSource)
@@ -82,7 +82,6 @@ export class LambdaStack extends cdk.Stack {
       environment: secrets,
       functionName: name,
       timeout: cdk.Duration.seconds(10),
-      vpc: this.vpcStack.vpc,
     })
   }
 
@@ -110,6 +109,4 @@ export class LambdaStack extends cdk.Stack {
       })
     )
   }
-
-  private 
 }

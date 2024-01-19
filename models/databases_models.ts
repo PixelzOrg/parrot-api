@@ -5,9 +5,12 @@ export const S3_ACTIONS = {
   PUT_OBJECT: 's3:PutObject',
 }
 
-export const RDS_ACTIONS = {
-  DELETE: 'rds:Delete',
-  INSERT: 'rds:Insert',
-  SELECT: 'rds:Select',
-  UPDATE: 'rds:Update',
+export const DynamoDbPermissions = {
+  BATCH_GET: 'dynamodb:BatchGetItem',
+  BATCH_WRITE: 'dynamodb:BatchWriteItem',
+  GET: 'dynamodb:GetItem',
+  PUT: 'dynamodb:PutItem',
+  QUERY: 'dynamodb:Query',
+  SCAN: 'dynamodb:Scan',
+  UPDATE: 'dynamodb:UpdateItem',
 }
