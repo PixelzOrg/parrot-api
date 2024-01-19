@@ -19,7 +19,6 @@ const app = new cdk.App()
 const defaultAccount = process.env.CDK_DEFAULT_ACCOUNT as string
 const defaultRegion = process.env.CDK_DEFAULT_REGION as string
 
-
 // Instantiate the DynamoDB Stack
 const dynamoDbStack = new DynamoDbStack(app, 'DynamoDbStack', {
   env: {

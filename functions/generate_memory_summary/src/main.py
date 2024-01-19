@@ -1,7 +1,7 @@
 import json
 import os
 import uuid
-from utility import create_presigned_post
+from .utility import create_presigned_post
 
 
 BUCKET_NAME = os.environ.get('S3_BUCKET_NAME')

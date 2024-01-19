@@ -12,7 +12,7 @@ export interface LambdaConfig {
   url?: string
   queueName?: string
   path: string
-  policy: Policy
+  policy?: Policy
   secrets: {
     [key: string]: string
   }
@@ -21,6 +21,7 @@ export interface LambdaConfig {
     events: s3.EventType[]
     filters: s3.NotificationKeyFilter[]
   }
+  bucketName?: string
 }
 
 export interface Policy {
@@ -34,9 +35,6 @@ export interface LambdaStackProps extends cdk.StackProps {
 }
 
 export function verifyLambdaConfig(config: LambdaConfig): void {
-  if (!config.policy) {
-    throw new Error(`Lambda ${config.name} is missing policy`)
-  }
   if (!config.path) {
     throw new Error(`Lambda ${config.name} is missing path`)
   }

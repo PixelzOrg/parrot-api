@@ -39,19 +39,20 @@ export class LambdaStack extends cdk.Stack {
         this.configureApiRouteToLambda(lambdaFunction, config)
       }
 
-      if (config.eventSource) {
+      if (config.eventSource && config.bucketName) {
         this.addS3EventSourceToLambda(
           lambdaFunction,
           config.eventSource.events,
           config.eventSource.filters
         )
       }
-
-      this.attachPoliciesToLambda(
-        lambdaFunction,
-        config.policy.actions,
-        config.policy.resources
-      )
+      if (config.policy) {
+        this.attachPoliciesToLambda(
+          lambdaFunction,
+          config.policy.actions,
+          config.policy.resources
+        )
+      }
     })
   }
 
@@ -61,7 +62,7 @@ export class LambdaStack extends cdk.Stack {
     filters: s3.NotificationKeyFilter[]
   ): void {
     const s3EventSource = new lambdaEventSources.S3EventSource(
-      this.s3BucketStack.s3Bucket,
+      this.s3BucketStack.uploadBucket,
       {
         events: events,
         filters: filters,
