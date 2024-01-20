@@ -1,11 +1,11 @@
+import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 import * as cdk from 'aws-cdk-lib'
-import { PolicyStatement } from 'aws-cdk-lib/aws-iam'
 import * as lambda from 'aws-cdk-lib/aws-lambda'
 import * as lambdaEventSources from 'aws-cdk-lib/aws-lambda-event-sources'
 import * as s3 from 'aws-cdk-lib/aws-s3'
 import { Construct } from 'constructs'
 
-import { lambdaConfigs } from '../config/lambda-config'
+import { AuthLambdaConfig, lambdaConfigs } from '../config/lambda-config'
 import { LambdaConfig } from '../models/lambda_models'
 import { LambdaStackProps, verifyLambdaConfig } from '../models/lambda_models'
 import { ApiGatewayStack } from './api-gateway-stack'
@@ -88,13 +88,15 @@ export class LambdaStack extends cdk.Stack {
 
   private configureApiRouteToLambda(
     lambdaFunction: lambda.DockerImageFunction,
-    config: LambdaConfig
+    config: LambdaConfig,
   ): void {
-    this.apiStack.addIntegration(
-      // @ts-expect-error - TODO: fix this
+    this.apiStack.addRouteIntegration(
+      // @ts-ignore
       config.corsConfig.allowMethods,
+      // @ts-ignore
       config.url,
-      lambdaFunction
+      lambdaFunction,
+      this.apiStack.auth
     )
   }
 
@@ -104,7 +106,7 @@ export class LambdaStack extends cdk.Stack {
     resources: string[]
   ): void {
     lambdaFunction.addToRolePolicy(
-      new PolicyStatement({
+      new cdk.aws_iam.PolicyStatement({
         actions: actions,
         resources: resources,
       })

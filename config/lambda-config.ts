@@ -1,7 +1,7 @@
 import 'dotenv/config'
 
-import * as lambda from '@aws-cdk/aws-lambda'
-import * as s3 from '@aws-cdk/aws-s3'
+import * as lambda from 'aws-cdk-lib/aws-lambda'
+import * as s3 from 'aws-cdk-lib/aws-s3'
 
 import { S3_ACTIONS } from '../models/databases_models'
 import { DynamoDbPermissions } from '../models/databases_models'
@@ -141,11 +141,11 @@ export const lambdaConfigs: LambdaConfig[] = [
         S3_ACTIONS.GET_OBJECT,
         DynamoDbPermissions.PUT,
         DynamoDbPermissions.GET,
-        DynamoDbPermissions.QUERY
+        DynamoDbPermissions.QUERY,
       ],
       resources: [
         process.env.AWS_USER_BUCKET_ARN as string,
-        process.env.AWS_DYNAMODB_TABLE_ARN as string
+        process.env.AWS_DYNAMODB_TABLE_ARN as string,
       ],
     },
     secrets: {
@@ -170,13 +170,13 @@ export const lambdaConfigs: LambdaConfig[] = [
         S3_ACTIONS.GET_OBJECT,
         DynamoDbPermissions.PUT,
         DynamoDbPermissions.GET,
-        DynamoDbPermissions.QUERY
+        DynamoDbPermissions.QUERY,
       ],
       resources: [process.env.AWS_DYNAMODB_TABLE_ARN as string],
     },
     secrets: {
-      OPEN_AI_KEY: process.env.OPEN_AI_KEY as string,
       DYNAMO_DB_NAME: process.env.AWS_DYNAMODB_TABLE_NAME as string,
+      OPEN_AI_KEY: process.env.OPEN_AI_KEY as string,
       S3_BUCKET_ARN: process.env.AWS_USER_BUCKET_ARN as string,
       S3_BUCKET_NAME: process.env.AWS_USER_BUCKET_NAME as string,
     },
@@ -197,13 +197,13 @@ export const lambdaConfigs: LambdaConfig[] = [
         S3_ACTIONS.GET_OBJECT,
         DynamoDbPermissions.PUT,
         DynamoDbPermissions.GET,
-        DynamoDbPermissions.QUERY
+        DynamoDbPermissions.QUERY,
       ],
       resources: [process.env.AWS_DYNAMODB_TABLE_ARN as string],
     },
     secrets: {
-      OPEN_AI_KEY: process.env.OPEN_AI_KEY as string,
       DYNAMO_DB_NAME: process.env.AWS_DYNAMODB_TABLE_NAME as string,
+      OPEN_AI_KEY: process.env.OPEN_AI_KEY as string,
       S3_BUCKET_ARN: process.env.AWS_USER_BUCKET_ARN as string,
       S3_BUCKET_NAME: process.env.AWS_USER_BUCKET_NAME as string,
     },
@@ -218,15 +218,33 @@ export const lambdaConfigs: LambdaConfig[] = [
       actions: [
         DynamoDbPermissions.PUT,
         DynamoDbPermissions.GET,
-        DynamoDbPermissions.QUERY
+        DynamoDbPermissions.QUERY,
       ],
       resources: [process.env.AWS_DYNAMODB_TABLE_ARN as string],
     },
     secrets: {
-      OPEN_AI_KEY: process.env.OPEN_AI_KEY as string,
       DYNAMO_DB_NAME: process.env.AWS_DYNAMODB_TABLE_NAME as string,
+      OPEN_AI_KEY: process.env.OPEN_AI_KEY as string,
       S3_BUCKET_ARN: process.env.AWS_USER_BUCKET_ARN as string,
       S3_BUCKET_NAME: process.env.AWS_USER_BUCKET_NAME as string,
     },
   },
 ]
+
+export const AuthLambdaConfig: LambdaConfig =
+  /*
+  /  AUTH RELATED LAMBDAS
+  */
+  {
+    authorizer: true,
+    corsConfig: {
+      allowHeaders: ['*'],
+      allowMethods: [lambda.HttpMethod.ALL],
+      allowOrigins: ['*'],
+    },
+    name: 'Firebase-Auth',
+    path: './functions/firebase_auth/',
+    secrets: {
+      OPEN_AI_KEY: process.env.OPEN_AI_KEY as string,
+    },
+  }

@@ -7,7 +7,10 @@ export class S3BucketStack extends cdk.Stack {
 
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props)
-    this.uploadBucket = this.createBucket(this, process.env.AWS_UPLOAD_BUCKET_NAME as string)
+    this.uploadBucket = this.createBucket(
+      this,
+      process.env.AWS_UPLOAD_BUCKET_NAME as string
+    )
   }
 
   private createBucket(stack: cdk.Stack, name: string): s3.Bucket {

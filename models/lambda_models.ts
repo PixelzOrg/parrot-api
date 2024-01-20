@@ -1,4 +1,4 @@
-import * as apigateway from '@aws-cdk/aws-apigateway'
+import * as apigateway from 'aws-cdk-lib/aws-apigateway'
 import * as cdk from 'aws-cdk-lib'
 import * as s3 from 'aws-cdk-lib/aws-s3'
 
@@ -9,6 +9,7 @@ import { S3BucketStack } from '../lib/s3-stack'
 
 export interface LambdaConfig {
   name: string
+  authorizer?: boolean
   url?: string
   queueName?: string
   path: string
