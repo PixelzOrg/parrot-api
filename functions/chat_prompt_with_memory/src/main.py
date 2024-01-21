@@ -1,8 +1,10 @@
 import os
 import logging
 import json
+import openai
 from openai import OpenAI
 
+# Configure OpenAI client
 # Configure OpenAI client
 client = OpenAI(
     api_key=os.environ.get('OPEN_AI_KEY'),
@@ -13,8 +15,28 @@ def handler(event, context):
     try:
         body = json.loads(event['body'])
         logging.info("Received event: %s", json.dumps(body, indent=2))
-        chat_history = body['chat_history']
+        memory = body['memory']
         prompt = body['prompt']
+
+        # Formatting the memory for the chat context
+        memory_context = (
+            f"Title: {memory['title']}\n"
+            f"Location: {memory['location']}\n"
+            f"Time: {memory['time']}\n"
+            f"Context: {memory['video_context']}\n"
+            f"Summary: {memory['summary']}\n"
+            f"Transcription: {memory['transcription']}"
+        )
+
+        focus_instruction = "Please pay close attention to the details of the memory provided above, as the upcoming question relates closely to it."
+
+        
+        # Create the chat history with the memory context as system messages
+        messages = [
+            {"role": "system", "content": memory_context},
+            {"role": "system", "content": focus_instruction},
+            {"role": "user", "content": prompt}
+        ]
 
     except (json.decoder.JSONDecodeError, KeyError, ValueError) as e:
         logging.error("Error processing request: %s", e)
@@ -23,13 +45,12 @@ def handler(event, context):
             'body': json.dumps({'message': 'Invalid request', 'error': str(e)})
         }
 
-    messages = chat_history
-    messages.append({"role": "user", "content": prompt})
-
     try:
         logging.info("Sending prompt to OpenAI")
-        response = client.chat.completions.create(model="gpt-3.5-turbo",
-        messages=messages)
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=messages
+        )
         logging.info("Received response from OpenAI")
 
         return {
@@ -46,3 +67,6 @@ def handler(event, context):
             'body': json.dumps({'message': 'Error in OpenAI API call', 'error': str(e)})
         }
 
+def is_valid_token(token):
+    # Placeholder for actual token validation logic
+    return True
