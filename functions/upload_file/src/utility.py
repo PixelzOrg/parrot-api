@@ -1,6 +1,7 @@
-import boto3
 import logging
+import boto3
 from botocore.exceptions import ClientError
+
 
 def create_presigned_post(bucket_name, object_name,
                           fields=None, conditions=None, expiration=3600):
@@ -24,7 +25,7 @@ def create_presigned_post(bucket_name, object_name,
                                                      object_name,
                                                      Fields=fields,
                                                      Conditions=conditions,
-                                                     ExpiresIn=10000000)
+                                                     ExpiresIn=expiration)
     except ClientError as e:
         logging.error(e)
         return None

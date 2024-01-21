@@ -5,22 +5,15 @@ from utility import create_presigned_post
 
 
 BUCKET_NAME = os.environ.get('S3_BUCKET_NAME')
-BUCKET_ARN = os.environ.get('S3_BUCKET_ARN')
 
 def handler(event, context):
     try:
-        
-        file_uuid = str(uuid.uuid4())
+        # Parse the JSON body
+        body = json.loads(event['body'])
+        user_uid = body['user_uid']
+        file_type = body['file_type']
 
-        file_path = f"upload/{file_uuid}.mp4"
-
-        # Generate a presigned URL for the S3 upload
-        presigned_url = create_presigned_post(
-            BUCKET_NAME,
-            file_path
-        )
-
-    except Exception as e:
+    except json.decoder.JSONDecodeError as e:
         return {
             'statusCode': 400,
             'body': json.dumps(
@@ -30,6 +23,13 @@ def handler(event, context):
                 }
             )
         }
+    
+    file_uid = str(uuid.uuid4())
+
+    filename = f"{user_uid}/{file_uid}.{file_type}"
+
+    # Generate a presigned URL for the S3 upload
+    presigned_url = create_presigned_post(BUCKET_NAME, filename)
 
     return {
         'statusCode': 200,
@@ -37,7 +37,7 @@ def handler(event, context):
             {
                 'message': 'Presigned URL generated successfully',
                 'expires': 3600,
-                'file_path': file_path,
+                'file_uid': file_uid,
                 'presigned_url': presigned_url
             }
         )

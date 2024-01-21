@@ -3,8 +3,10 @@ import json
 import logging
 from typing import Any, Dict
 import firebase_admin
-from firebase_admin import auth
+from firebase_admin import credentials, auth, exceptions as firebase_exceptions
+
 from aws_lambda_typing import events, responses
+
 
 # Initialize Firebase Admin SDK
 if not firebase_admin._apps:
@@ -43,17 +45,32 @@ def handler(event: events.APIGatewayProxyEventV2, context: Any) -> responses.API
 
     try:
         # Verify the token with Firebase
-        decoded_token = auth.verify_id_token(token)
+        decoded_token = firebase_admin.auth.verify_id_token(token)
         if not decoded_token:
-            raise Exception('Unauthorized: Invalid token')
+            raise ValueError('Unauthorized: Something went wrong in token verification, check firebase auth')
 
         logger.info('Token verified successfully')
         return generate_policy('user', 'Allow', '*')
-
-    except Exception as e:
-        logger.error(f'Error in token verification: {e}')
-        return generate_policy('user', 'Deny', '*')
-
+    
+    except firebase_exceptions.UnavailableError:
+        logger.error('Error in token verification: Firebase unavailable')
+        return {
+            'statusCode': 503,
+            'body': json.dumps({'message': 'Database unavailable'})
+        }
+    except firebase_exceptions.UnauthenticatedError:
+        logger.error('Error in token verification: Token invalid')
+        return {
+            'statusCode': 401,
+            'body': json.dumps({'message': 'Unauthorized: Token invalid'})
+        }
+    except firebase_exceptions.FirebaseError:
+        logger.error('Error in token verification: Firebase error')
+        return {
+            'statusCode': 401,
+            'body': json.dumps({'message': 'Serverside verification failed'})
+        }
+    
 def generate_policy(principal_id: str, effect: str, resource: str) -> Dict[str, Any]:
     """
     Generates an IAM policy for a user.
