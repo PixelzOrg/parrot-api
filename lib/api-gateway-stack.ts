@@ -1,16 +1,17 @@
 import { RemovalPolicy } from 'aws-cdk-lib'
 import * as cdk from 'aws-cdk-lib'
-import * as lambda from 'aws-cdk-lib/aws-lambda'
-import { AuthLambdaConfig } from '../config/lambda-config'
 import {
   LambdaIntegration,
   LogGroupLogDestination,
   RestApi,
 } from 'aws-cdk-lib/aws-apigateway'
 import * as apigateway from 'aws-cdk-lib/aws-apigateway'
+import * as lambda from 'aws-cdk-lib/aws-lambda'
 import { IFunction } from 'aws-cdk-lib/aws-lambda'
 import { LogGroup, RetentionDays } from 'aws-cdk-lib/aws-logs'
 import { Construct } from 'constructs'
+
+import { AuthLambdaConfig } from '../config/lambda-config'
 
 export class ApiGatewayStack extends cdk.Stack {
   public api: RestApi
@@ -35,13 +36,17 @@ export class ApiGatewayStack extends cdk.Stack {
   }
 
   private createAuthorizerLambda(stack: cdk.Stack): apigateway.IAuthorizer {
-    const auth = new lambda.DockerImageFunction(stack, 'createAuthorizerLambda', {
-      architecture: lambda.Architecture.ARM_64,
-      code: lambda.DockerImageCode.fromImageAsset(AuthLambdaConfig.path),
-      environment: AuthLambdaConfig.secrets,
-      functionName: AuthLambdaConfig.name,
-      timeout: cdk.Duration.seconds(10),
-    })
+    const auth = new lambda.DockerImageFunction(
+      stack,
+      'createAuthorizerLambda',
+      {
+        architecture: lambda.Architecture.ARM_64,
+        code: lambda.DockerImageCode.fromImageAsset(AuthLambdaConfig.path),
+        environment: AuthLambdaConfig.secrets,
+        functionName: AuthLambdaConfig.name,
+        timeout: cdk.Duration.seconds(10),
+      }
+    )
     return new apigateway.RequestAuthorizer(stack, 'parrot-token-authorizer', {
       handler: auth,
       identitySources: [apigateway.IdentitySource.header('Authorization')],
@@ -70,5 +75,4 @@ export class ApiGatewayStack extends cdk.Stack {
       authorizer: auth,
     })
   }
-
 }

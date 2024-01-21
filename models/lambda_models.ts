@@ -1,5 +1,5 @@
-import * as apigateway from 'aws-cdk-lib/aws-apigateway'
 import * as cdk from 'aws-cdk-lib'
+import * as apigateway from 'aws-cdk-lib/aws-apigateway'
 import * as s3 from 'aws-cdk-lib/aws-s3'
 
 import { ApiGatewayStack } from '../lib/api-gateway-stack'
@@ -34,4 +34,3 @@ export interface LambdaStackProps extends cdk.StackProps {
   apiGatewayStack: ApiGatewayStack
   s3BucketStack: S3BucketStack
 }
-

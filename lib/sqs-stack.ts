@@ -1,5 +1,5 @@
-import * as sqs from 'aws-cdk-lib/aws-sqs'
 import * as cdk from 'aws-cdk-lib'
+import * as sqs from 'aws-cdk-lib/aws-sqs'
 import { Construct } from 'constructs'
 
 export class SqsStack extends cdk.Stack {

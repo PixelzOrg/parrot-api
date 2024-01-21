@@ -1,4 +1,3 @@
-import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 import * as cdk from 'aws-cdk-lib'
 import * as lambda from 'aws-cdk-lib/aws-lambda'
 import * as lambdaEventSources from 'aws-cdk-lib/aws-lambda-event-sources'
@@ -25,14 +24,13 @@ export class LambdaStack extends cdk.Stack {
 
   private initializeLambdas(): void {
     lambdaConfigs.forEach((config) => {
-
       const lambdaFunction: lambda.DockerImageFunction =
         this.createLambdaFunction(
           this,
           config.name,
           config.path,
           config.secrets
-      )
+        )
 
       if (config.url && config.corsConfig) {
         this.configureApiRouteToLambda(lambdaFunction, config)
@@ -87,12 +85,11 @@ export class LambdaStack extends cdk.Stack {
 
   private configureApiRouteToLambda(
     lambdaFunction: lambda.DockerImageFunction,
-    config: LambdaConfig,
+    config: LambdaConfig
   ): void {
     this.apiStack.addRouteIntegration(
-      // @ts-ignore
+      // @ts-expect-error will never be undefined
       config.corsConfig.allowMethods,
-      // @ts-ignore
       config.url,
       lambdaFunction,
       this.apiStack.auth

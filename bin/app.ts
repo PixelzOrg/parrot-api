@@ -19,28 +19,41 @@ const app = new cdk.App()
 const defaultAccount = process.env.CDK_DEFAULT_ACCOUNT as string
 const defaultRegion = process.env.CDK_DEFAULT_REGION as string
 
+console.log('Deploying Stacks...')
+
+
 // Instantiate the DynamoDB Stack
+console.log('Deploying DynamoDbStack...')
 const dynamoDbStack = new DynamoDbStack(app, 'DynamoDbStack', {
   env: {
     account: defaultAccount,
     region: defaultRegion,
   },
 })
+console.log(`Successfully deployed stack: ${dynamoDbStack.stackName}`)
+
 // Instantiate the S3 Bucket Stack
+console.log('Deploying S3BucketStack...')
 const s3BucketStack = new S3BucketStack(app, 'S3BucketStack', {
   env: {
     account: defaultAccount,
     region: defaultRegion,
   },
 })
+console.log(`Successfully deployed stack: ${s3BucketStack.stackName}`)
+
 // Instantiate the API Gateway Stack
+console.log('Deploying ApiGatewayStack...')
 const apiGatewayStack = new ApiGatewayStack(app, 'ApiGatewayStack', {
   env: {
     account: defaultAccount,
     region: defaultRegion,
   },
 })
+console.log(`Successfully deployed stack: ${apiGatewayStack.stackName}`)
+
 // Instantiate the Lambda Stack
+console.log('Deploying LambdaStack...')
 const lambdaStack = new LambdaStack(app, 'LambdaStack', {
   apiGatewayStack: apiGatewayStack,
   env: {
@@ -49,3 +62,4 @@ const lambdaStack = new LambdaStack(app, 'LambdaStack', {
   },
   s3BucketStack: s3BucketStack,
 })
+console.log(`Successfully deployed stack: ${lambdaStack.stackName}`)
