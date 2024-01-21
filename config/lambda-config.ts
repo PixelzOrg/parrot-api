@@ -6,6 +6,7 @@ import * as s3 from 'aws-cdk-lib/aws-s3'
 import { S3_ACTIONS } from '../models/databases_models'
 import { DynamoDbPermissions } from '../models/databases_models'
 import { LambdaConfig } from '../models/lambda_models'
+import { S3 } from 'aws-cdk-lib/aws-ses-actions'
 
 export const lambdaConfigs: LambdaConfig[] = [
   /*
@@ -51,6 +52,9 @@ export const lambdaConfigs: LambdaConfig[] = [
     policy: {
       actions: [
         S3_ACTIONS.PUT_OBJECT,
+        S3_ACTIONS.GET_OBJECT,
+        S3_ACTIONS.LIST_BUCKET,
+        S3_ACTIONS.DELETE_OBJECT,
         DynamoDbPermissions.PUT,
         DynamoDbPermissions.GET,
       ],

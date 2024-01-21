@@ -52,20 +52,29 @@ def handler(event: events.APIGatewayProxyEventV2, context: Any) -> responses.API
         logger.info('Token verified successfully')
         return generate_policy('user', 'Allow', '*')
     
-    except firebase_exceptions.UnavailableError:
-        logger.error('Error in token verification: Firebase unavailable')
+    except firebase_exceptions.UnavailableError as e:
+        logger.error({
+            "message": 'Error in token verification: Firebase error', 
+             "error": {e}
+        })
         return {
             'statusCode': 503,
             'body': json.dumps({'message': 'Database unavailable'})
         }
-    except firebase_exceptions.UnauthenticatedError:
-        logger.error('Error in token verification: Token invalid')
+    except firebase_exceptions.UnauthenticatedError as e:
+        logger.error({
+            "message": 'Error in token verification: Firebase error', 
+             "error": {e}
+        })
         return {
             'statusCode': 401,
             'body': json.dumps({'message': 'Unauthorized: Token invalid'})
         }
-    except firebase_exceptions.FirebaseError:
-        logger.error('Error in token verification: Firebase error')
+    except firebase_exceptions.FirebaseError as e:
+        logger.error({
+            "message": 'Error in token verification: Firebase error', 
+             "error": {e}
+        })
         return {
             'statusCode': 401,
             'body': json.dumps({'message': 'Serverside verification failed'})

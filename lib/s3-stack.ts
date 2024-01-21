@@ -15,9 +15,7 @@ export class S3BucketStack extends cdk.Stack {
 
   private createBucket(stack: cdk.Stack, name: string): s3.Bucket {
     const bucket = new s3.Bucket(stack, 'Bucket', {
-      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
       bucketName: name,
-      objectOwnership: s3.ObjectOwnership.BUCKET_OWNER_ENFORCED,
     })
     return bucket
   }
