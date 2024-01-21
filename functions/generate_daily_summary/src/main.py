@@ -14,7 +14,6 @@ def handler(event, context):
         body = json.loads(event['body'])
         logging.info("Received event: %s", json.dumps(body, indent=2))
         memories = body['memories']
-        prompt = body['prompt']
 
         messages = []
 
@@ -41,7 +40,7 @@ def handler(event, context):
 
     try:
         logging.info("Sending prompt to OpenAI")
-        response = client.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=messages
         )

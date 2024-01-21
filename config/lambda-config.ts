@@ -48,7 +48,7 @@ export const lambdaConfigs: LambdaConfig[] = [
     secrets: {
       OPEN_AI_KEY: process.env.OPEN_AI_KEY as string,
     },
-    url: '/overview/daily_summary',
+    url: '/api/v1/overview/daily_summary',
   },
   /*
   /   UPLOAD RELATED LAMBDAS
