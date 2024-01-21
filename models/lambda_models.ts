@@ -35,11 +35,3 @@ export interface LambdaStackProps extends cdk.StackProps {
   s3BucketStack: S3BucketStack
 }
 
-export function verifyLambdaConfig(config: LambdaConfig): void {
-  if (!config.path) {
-    throw new Error(`Lambda ${config.name} is missing path`)
-  }
-  if (!config.name) {
-    throw new Error(`Lambda is missing name`)
-  }
-}

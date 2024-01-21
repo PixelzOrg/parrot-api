@@ -42,9 +42,9 @@ export class ApiGatewayStack extends cdk.Stack {
       functionName: AuthLambdaConfig.name,
       timeout: cdk.Duration.seconds(10),
     })
-    return new apigateway.TokenAuthorizer(stack, 'parrot-token-authorizer', {
+    return new apigateway.RequestAuthorizer(stack, 'parrot-token-authorizer', {
       handler: auth,
-      identitySource: 'method.request.header.Authorization',
+      identitySources: [apigateway.IdentitySource.header('Authorization')],
       resultsCacheTtl: cdk.Duration.minutes(5),
     })
   }

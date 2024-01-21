@@ -5,9 +5,9 @@ import * as lambdaEventSources from 'aws-cdk-lib/aws-lambda-event-sources'
 import * as s3 from 'aws-cdk-lib/aws-s3'
 import { Construct } from 'constructs'
 
-import { AuthLambdaConfig, lambdaConfigs } from '../config/lambda-config'
+import { lambdaConfigs } from '../config/lambda-config'
 import { LambdaConfig } from '../models/lambda_models'
-import { LambdaStackProps, verifyLambdaConfig } from '../models/lambda_models'
+import { LambdaStackProps } from '../models/lambda_models'
 import { ApiGatewayStack } from './api-gateway-stack'
 import { S3BucketStack } from './s3-stack'
 
@@ -25,7 +25,6 @@ export class LambdaStack extends cdk.Stack {
 
   private initializeLambdas(): void {
     lambdaConfigs.forEach((config) => {
-      verifyLambdaConfig(config)
 
       const lambdaFunction: lambda.DockerImageFunction =
         this.createLambdaFunction(
@@ -33,7 +32,7 @@ export class LambdaStack extends cdk.Stack {
           config.name,
           config.path,
           config.secrets
-        )
+      )
 
       if (config.url && config.corsConfig) {
         this.configureApiRouteToLambda(lambdaFunction, config)

@@ -54,12 +54,12 @@ export const lambdaConfigs: LambdaConfig[] = [
         DynamoDbPermissions.PUT,
         DynamoDbPermissions.GET,
       ],
-      resources: [process.env.AWS_USER_BUCKET_ARN as string],
+      resources: [process.env.AWS_UPLOAD_BUCKET_ARN as string],
     },
     secrets: {
       DYNAMO_DB_NAME: process.env.AWS_DYNAMODB_TABLE_NAME as string,
-      S3_BUCKET_ARN: process.env.AWS_USER_BUCKET_ARN as string,
-      S3_BUCKET_NAME: process.env.AWS_USER_BUCKET_NAME as string,
+      S3_BUCKET_ARN: process.env.AWS_UPLOAD_BUCKET_ARN as string,
+      S3_BUCKET_NAME: process.env.AWS_UPLOAD_BUCKET_NAME as string,
     },
     url: '/api/v1/capture/upload/upload_file',
   },
@@ -73,11 +73,11 @@ export const lambdaConfigs: LambdaConfig[] = [
     path: './functions/start_multipart_upload/',
     policy: {
       actions: [S3_ACTIONS.PUT_OBJECT],
-      resources: [process.env.AWS_USER_BUCKET_ARN as string],
+      resources: [process.env.AWS_UPLOAD_BUCKET_ARN as string],
     },
     secrets: {
-      S3_BUCKET_ARN: process.env.AWS_USER_BUCKET_ARN as string,
-      S3_BUCKET_NAME: process.env.AWS_USER_BUCKET_NAME as string,
+      S3_BUCKET_ARN: process.env.AWS_UPLOAD_BUCKET_ARN as string,
+      S3_BUCKET_NAME: process.env.AWS_UPLOAD_BUCKET_NAME as string,
     },
     url: '/api/v1/capture/upload/start_multipart_upload',
   },
@@ -91,11 +91,11 @@ export const lambdaConfigs: LambdaConfig[] = [
     path: './functions/append_multipart_upload/',
     policy: {
       actions: [S3_ACTIONS.PUT_OBJECT],
-      resources: [process.env.AWS_USER_BUCKET_ARN as string],
+      resources: [process.env.AWS_UPLOAD_BUCKET_ARN as string],
     },
     secrets: {
-      S3_BUCKET_ARN: process.env.AWS_USER_BUCKET_ARN as string,
-      S3_BUCKET_NAME: process.env.AWS_USER_BUCKET_NAME as string,
+      S3_BUCKET_ARN: process.env.AWS_UPLOAD_BUCKET_ARN as string,
+      S3_BUCKET_NAME: process.env.AWS_UPLOAD_BUCKET_NAME as string,
     },
     url: '/api/v1/capture/upload/append_multipart_upload',
   },
@@ -113,12 +113,12 @@ export const lambdaConfigs: LambdaConfig[] = [
         DynamoDbPermissions.PUT,
         DynamoDbPermissions.GET,
       ],
-      resources: [process.env.AWS_USER_BUCKET_ARN as string],
+      resources: [process.env.AWS_UPLOAD_BUCKET_ARN as string],
     },
     secrets: {
       DYNAMO_DB_NAME: process.env.AWS_DYNAMODB_TABLE_NAME as string,
-      S3_BUCKET_ARN: process.env.AWS_USER_BUCKET_ARN as string,
-      S3_BUCKET_NAME: process.env.AWS_USER_BUCKET_NAME as string,
+      S3_BUCKET_ARN: process.env.AWS_UPLOAD_BUCKET_ARN as string,
+      S3_BUCKET_NAME: process.env.AWS_UPLOAD_BUCKET_NAME as string,
     },
     url: '/api/v1/capture/upload/complete_multipart_upload',
   },
@@ -144,14 +144,14 @@ export const lambdaConfigs: LambdaConfig[] = [
         DynamoDbPermissions.QUERY,
       ],
       resources: [
-        process.env.AWS_USER_BUCKET_ARN as string,
+        process.env.AWS_UPLOAD_BUCKET_ARN as string,
         process.env.AWS_DYNAMODB_TABLE_ARN as string,
       ],
     },
     secrets: {
       DYNAMO_DB_NAME: process.env.AWS_DYNAMODB_TABLE_NAME as string,
-      S3_BUCKET_ARN: process.env.AWS_USER_BUCKET_ARN as string,
-      S3_BUCKET_NAME: process.env.AWS_USER_BUCKET_NAME as string,
+      S3_BUCKET_ARN: process.env.AWS_UPLOAD_BUCKET_ARN as string,
+      S3_BUCKET_NAME: process.env.AWS_UPLOAD_BUCKET_NAME as string,
     },
   },
   {
@@ -177,8 +177,8 @@ export const lambdaConfigs: LambdaConfig[] = [
     secrets: {
       DYNAMO_DB_NAME: process.env.AWS_DYNAMODB_TABLE_NAME as string,
       OPEN_AI_KEY: process.env.OPEN_AI_KEY as string,
-      S3_BUCKET_ARN: process.env.AWS_USER_BUCKET_ARN as string,
-      S3_BUCKET_NAME: process.env.AWS_USER_BUCKET_NAME as string,
+      S3_BUCKET_ARN: process.env.AWS_UPLOAD_BUCKET_ARN as string,
+      S3_BUCKET_NAME: process.env.AWS_UPLOAD_BUCKET_NAME as string,
     },
   },
   {
@@ -204,8 +204,8 @@ export const lambdaConfigs: LambdaConfig[] = [
     secrets: {
       DYNAMO_DB_NAME: process.env.AWS_DYNAMODB_TABLE_NAME as string,
       OPEN_AI_KEY: process.env.OPEN_AI_KEY as string,
-      S3_BUCKET_ARN: process.env.AWS_USER_BUCKET_ARN as string,
-      S3_BUCKET_NAME: process.env.AWS_USER_BUCKET_NAME as string,
+      S3_BUCKET_ARN: process.env.AWS_UPLOAD_BUCKET_ARN as string,
+      S3_BUCKET_NAME: process.env.AWS_UPLOAD_BUCKET_NAME as string,
     },
   },
   /*
@@ -225,8 +225,8 @@ export const lambdaConfigs: LambdaConfig[] = [
     secrets: {
       DYNAMO_DB_NAME: process.env.AWS_DYNAMODB_TABLE_NAME as string,
       OPEN_AI_KEY: process.env.OPEN_AI_KEY as string,
-      S3_BUCKET_ARN: process.env.AWS_USER_BUCKET_ARN as string,
-      S3_BUCKET_NAME: process.env.AWS_USER_BUCKET_NAME as string,
+      S3_BUCKET_ARN: process.env.AWS_UPLOAD_BUCKET_ARN as string,
+      S3_BUCKET_NAME: process.env.AWS_UPLOAD_BUCKET_NAME as string,
     },
   },
 ]
@@ -245,6 +245,6 @@ export const AuthLambdaConfig: LambdaConfig =
     name: 'Firebase-Auth',
     path: './functions/firebase_auth/',
     secrets: {
-      OPEN_AI_KEY: process.env.OPEN_AI_KEY as string,
+      FIREBASE_CREDENTIALS: process.env.FIREBASE_CREDENTIALS as string,
     },
   }
