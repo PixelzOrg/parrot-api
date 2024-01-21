@@ -4,9 +4,9 @@ import * as lambda from 'aws-cdk-lib/aws-lambda'
 import * as s3 from 'aws-cdk-lib/aws-s3'
 
 import { S3_ACTIONS } from '../models/databases_models'
+import { SQS_ACTIONS } from '../models/sqs_models'
 import { DynamoDbPermissions } from '../models/databases_models'
 import { LambdaConfig } from '../models/lambda_models'
-import { S3 } from 'aws-cdk-lib/aws-ses-actions'
 
 export const lambdaConfigs: LambdaConfig[] = [
   /*
@@ -66,65 +66,6 @@ export const lambdaConfigs: LambdaConfig[] = [
       S3_BUCKET_NAME: process.env.AWS_UPLOAD_BUCKET_NAME as string,
     },
     url: '/api/v1/capture/upload/upload_file',
-  },
-  {
-    corsConfig: {
-      allowHeaders: ['*'],
-      allowMethods: [lambda.HttpMethod.POST],
-      allowOrigins: ['*'],
-    },
-    name: 'Start-Multipart-Upload',
-    path: './functions/start_multipart_upload/',
-    policy: {
-      actions: [S3_ACTIONS.PUT_OBJECT],
-      resources: [process.env.AWS_UPLOAD_BUCKET_ARN as string],
-    },
-    secrets: {
-      S3_BUCKET_ARN: process.env.AWS_UPLOAD_BUCKET_ARN as string,
-      S3_BUCKET_NAME: process.env.AWS_UPLOAD_BUCKET_NAME as string,
-    },
-    url: '/api/v1/capture/upload/start_multipart_upload',
-  },
-  {
-    corsConfig: {
-      allowHeaders: ['*'],
-      allowMethods: [lambda.HttpMethod.POST],
-      allowOrigins: ['*'],
-    },
-    name: 'Append-Multipart-Upload',
-    path: './functions/append_multipart_upload/',
-    policy: {
-      actions: [S3_ACTIONS.PUT_OBJECT],
-      resources: [process.env.AWS_UPLOAD_BUCKET_ARN as string],
-    },
-    secrets: {
-      S3_BUCKET_ARN: process.env.AWS_UPLOAD_BUCKET_ARN as string,
-      S3_BUCKET_NAME: process.env.AWS_UPLOAD_BUCKET_NAME as string,
-    },
-    url: '/api/v1/capture/upload/append_multipart_upload',
-  },
-  {
-    corsConfig: {
-      allowHeaders: ['*'],
-      allowMethods: [lambda.HttpMethod.DELETE],
-      allowOrigins: ['*'],
-    },
-    name: 'Complete-Multipart-Upload',
-    path: './functions/complete_multipart_upload/',
-    policy: {
-      actions: [
-        S3_ACTIONS.PUT_OBJECT,
-        DynamoDbPermissions.PUT,
-        DynamoDbPermissions.GET,
-      ],
-      resources: [process.env.AWS_UPLOAD_BUCKET_ARN as string],
-    },
-    secrets: {
-      DYNAMO_DB_NAME: process.env.AWS_DYNAMODB_TABLE_NAME as string,
-      S3_BUCKET_ARN: process.env.AWS_UPLOAD_BUCKET_ARN as string,
-      S3_BUCKET_NAME: process.env.AWS_UPLOAD_BUCKET_NAME as string,
-    },
-    url: '/api/v1/capture/upload/complete_multipart_upload',
   },
   /*
   /   PROCESSING RELATED LAMBDAS
@@ -252,3 +193,33 @@ export const AuthLambdaConfig: LambdaConfig =
       FIREBASE_CREDENTIALS: process.env.FIREBASE_CREDENTIALS as string,
     },
   }
+
+export const S3ToSQSConfig: LambdaConfig = {
+  name: 'S3-Upload-To-SQS',
+  path: './functions/s3_upload_to_sqs/',
+  policy: {
+    actions: [
+      S3_ACTIONS.PUT_OBJECT,
+      S3_ACTIONS.GET_OBJECT,
+      S3_ACTIONS.LIST_BUCKET,
+      S3_ACTIONS.DELETE_OBJECT,
+      SQS_ACTIONS.SEND_MESSAGE,
+      SQS_ACTIONS.RECEIVE_MESSAGE,
+      SQS_ACTIONS.GET_QUEUE_ATTRIBUTES,
+      DynamoDbPermissions.PUT,
+      DynamoDbPermissions.GET,
+    ],
+    resources: [
+      process.env.AWS_UPLOAD_BUCKET_ARN as string,
+      process.env.AWS_DYNAMODB_TABLE_ARN as string,
+      process.env.AWS_SQS_WHISPER_QUEUE_ARN as string,
+    ],
+  },
+  secrets: {
+    DYNAMO_DB_NAME: process.env.AWS_DYNAMODB_TABLE_NAME as string,
+    S3_BUCKET_ARN: process.env.AWS_UPLOAD_BUCKET_ARN as string,
+    S3_BUCKET_NAME: process.env.AWS_UPLOAD_BUCKET_NAME as string,
+    WHISPER_QUEUE_URL: process.env.AWS_SQS_WHISPER_QUEUE_URL as string,
+  },
+  url: '/api/v1/capture/upload/upload_file',
+}

@@ -14,7 +14,7 @@ export class DynamoDbStack extends cdk.Stack {
     const dynamoDbTable = new dynamodb.Table(stack, 'CreateDynamoDbTable', {
       billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
       partitionKey: {
-        name: 'memory_id',
+        name: 'user_uid',
         type: dynamodb.AttributeType.STRING,
       },
       tableName: process.env.AWS_DYNAMODB_TABLE_NAME as string,

@@ -20,7 +20,7 @@ RUN pip install --no-cache-dir git+https://github.com/openai/whisper.git
 RUN whisper --model_dir /usr/local --model medium audio >> /dev/null 2>&1; exit 0
 
 # Copy your application code
-COPY src/* ${LAMBDA_TASK_ROOT}
+COPY src/ ${LAMBDA_TASK_ROOT}
 
 # Set the CMD to your handler
 CMD ["src.handler"]
