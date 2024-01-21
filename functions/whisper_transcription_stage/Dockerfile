@@ -23,4 +23,4 @@ RUN whisper --model_dir /usr/local --model medium audio >> /dev/null 2>&1; exit 
 COPY src/ ${LAMBDA_TASK_ROOT}
 
 # Set the CMD to your handler
-CMD ["src.handler"]
+CMD ["main.handler"]

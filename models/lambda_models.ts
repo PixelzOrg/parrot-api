@@ -23,6 +23,7 @@ export interface LambdaConfig {
     filters: s3.NotificationKeyFilter[]
   }
   bucketName?: string
+  queue?: string
 }
 
 export interface Policy {

@@ -79,7 +79,7 @@ export class LambdaStack extends cdk.Stack {
       code: lambda.DockerImageCode.fromImageAsset(path),
       environment: secrets,
       functionName: name,
-      timeout: cdk.Duration.seconds(10),
+      timeout: cdk.Duration.seconds(120),
     })
   }
 

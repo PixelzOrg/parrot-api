@@ -1,47 +1,55 @@
 import json
 import os
-import uuid
-from utility import create_presigned_post
+import boto3
+from boto3.dynamodb.conditions import Key
 
-
-BUCKET_NAME = os.environ.get('S3_BUCKET_NAME')
-BUCKET_ARN = os.environ.get('S3_BUCKET_ARN')
+# Initialize DynamoDB client
+dynamodb = boto3.resource('dynamodb')
+MP4_DYNAMODB_TABLE_NAME = os.environ.get('MP4_DYNAMO_DB_TABLE_NAME')
+MP3_DYNAMODB_TABLE_NAME = os.environ.get('MP3_DYNAMO_DB_TABLE_NAME')
 
 def handler(event, context):
     try:
-        # Parse the JSON body
         body = json.loads(event['body'])
-        
-        file_uuid = str(uuid.uuid4())
-        memory_id = str(uuid.uuid4())
+        file_uid = body['file_uid']
+        file_type = body.get('file_type')
 
-        file_path = f"{memory_id}/{file_uuid}.mp4"
 
-        # Generate a presigned URL for the S3 upload
-        presigned_url = create_presigned_post(
-            BUCKET_NAME,
-            file_path
+        if file_type == 'mp4':
+            table_name = MP4_DYNAMODB_TABLE_NAME
+        elif file_type == 'mp3':
+            table_name = MP3_DYNAMODB_TABLE_NAME
+        else:
+            return {
+                'statusCode': 400,
+                'body': json.dumps({'message': 'Invalid file type'})
+            }
+
+        table = dynamodb.Table(table_name)
+        response = table.query(
+            KeyConditionExpression=Key('file_uid').eq(file_uid)
         )
+
+        if 'Items' in response and response['Items']:
+            item = response['Items'][0]
+
+            # Check if summary exists
+            if 'summary' in item and item['summary']:
+                return {
+                    'statusCode': 200,
+                    'body': json.dumps(item)
+                }
+            else:
+                return {
+                    'statusCode': 404,
+                    'body': json.dumps({'message': 'Summary not found'})
+                }
 
     except Exception as e:
         return {
-            'statusCode': 400,
-            'body': json.dumps(
-                {
-                    'message': 'Invalid request format',
-                    'error': str(e)
-                }
-            )
+            'statusCode': 500,
+            'body': json.dumps({
+                'message': 'Error processing the request',
+                'error': str(e)
+            })
         }
-
-    return {
-        'statusCode': 200,
-        'body': json.dumps(
-            {
-                'message': 'Presigned URL generated successfully',
-                'expires': 3600,
-                'file_path': file_path,
-                'presigned_url': presigned_url
-            }
-        )
-    }

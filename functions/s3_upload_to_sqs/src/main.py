@@ -10,7 +10,7 @@ logger.setLevel(logging.INFO)
 
 # Initialize the clients
 sqs_client = boto3.client('sqs')
-WHISPER_TRANSCRIPTION_URL = 'https://sqs.us-east-2.amazonaws.com/975050052244/WhisperQueue'
+WHISPER_TRANSCRIPTION_URL = os.environ['WHISPER_QUEUE_URL']
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     """

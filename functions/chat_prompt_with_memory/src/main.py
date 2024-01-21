@@ -1,61 +1,48 @@
-import json
 import os
-import boto3
+import logging
+import json
+from openai import OpenAI
 
-    
-BUCKET_NAME: str = os.environ.get('S3_BUCKET_NAME')
+# Configure OpenAI client
+client = OpenAI(
+    api_key=os.environ.get('OPEN_AI_KEY'),
+)
+logging.info("OpenAI client configured")
 
 def handler(event, context):
-
-    s3_client = boto3.client('s3')
-
     try:
-
         body = json.loads(event['body'])
+        logging.info("Received event: %s", json.dumps(body, indent=2))
+        chat_history = body['chat_history']
+        prompt = body['prompt']
 
-        part = body['part_number']
-        upload_id = body['upload_id']
-        file_location = body['file_location']
-
-    except json.decoder.JSONDecodeError as json_decode_error:
+    except (json.decoder.JSONDecodeError, KeyError, ValueError) as e:
+        logging.error("Error processing request: %s", e)
         return {
-            'statusCode': 500,
-            'body': json.dumps(
-                {
-                    'message': 'Something went wrong reading the JSON',
-                    'error' : str(json_decode_error)
-                }
-            )
+            'statusCode': 400,
+            'body': json.dumps({'message': 'Invalid request', 'error': str(e)})
         }
+
+    messages = chat_history
+    messages.append({"role": "user", "content": prompt})
 
     try:
-        presigned_url = s3_client.generate_presigned_url(
-            ClientMethod='upload_part',
-            Params={
-                'Bucket': BUCKET_NAME,
-                'Key': file_location,
-                'UploadId': upload_id,
-                'PartNumber': part
-            }
-        )
-    except s3_client.exceptions.ClientError as s3_client_error:
+        logging.info("Sending prompt to OpenAI")
+        response = client.chat.completions.create(model="gpt-3.5-turbo",
+        messages=messages)
+        logging.info("Received response from OpenAI")
+
+        return {
+            'statusCode': 200,
+            'body': json.dumps({
+                'message': 'Chat generated successfully',
+                'chat': response.choices[0].message.content
+            })
+        }
+    except Exception as e:
+        logging.error("Error while calling OpenAI API: %s", e)
         return {
             'statusCode': 500,
-            'body': json.dumps(
-                {
-                    'message': 'Error uploading part, please try again using the same part number',
-                    'error' : str(s3_client_error)
-                }
-            )
+            'body': json.dumps({'message': 'Error in OpenAI API call', 'error': str(e)})
         }
 
-    return {
-        'statusCode': 200,
-        'body': json.dumps(
-            {
-                'message': 'Part uploaded successfully',
-                'memory_id': file_location,
-                'upload_response': presigned_url
-            }
-        )
-    }
