@@ -1,9 +1,9 @@
 import * as cdk from 'aws-cdk-lib'
-import * as sqs from 'aws-cdk-lib/aws-sqs'
 import * as lambda from 'aws-cdk-lib/aws-lambda'
 import * as lambdaEventSources from 'aws-cdk-lib/aws-lambda-event-sources'
-
+import * as sqs from 'aws-cdk-lib/aws-sqs'
 import { Construct } from 'constructs'
+
 import { SQSLambdaConfigs } from '../config/lambda-config'
 
 export class SqsStack extends cdk.Stack {
@@ -37,22 +37,18 @@ export class SqsStack extends cdk.Stack {
         default:
           throw new Error('Invalid queue name')
       }
-      const SQSLambda = new lambda.DockerImageFunction(
-        stack,
-        config.name,
-        {
-          architecture: lambda.Architecture.ARM_64,
-          code: lambda.DockerImageCode.fromImageAsset(config.path),
-          environment: config.secrets,
-          functionName: config.name,
-          timeout: cdk.Duration.minutes(10),
-        }
-      );
+      const SQSLambda = new lambda.DockerImageFunction(stack, config.name, {
+        architecture: lambda.Architecture.ARM_64,
+        code: lambda.DockerImageCode.fromImageAsset(config.path),
+        environment: config.secrets,
+        functionName: config.name,
+        timeout: cdk.Duration.minutes(10),
+      })
       SQSLambda.addEventSource(
         new lambdaEventSources.SqsEventSource(queue, {
           batchSize: 1,
         })
-      );
+      )
       if (config.policy) {
         SQSLambda.addToRolePolicy(
           new cdk.aws_iam.PolicyStatement({

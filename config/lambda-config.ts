@@ -3,10 +3,9 @@ import 'dotenv/config'
 import * as lambda from 'aws-cdk-lib/aws-lambda'
 
 import { S3_ACTIONS } from '../models/databases_models'
-import { SQS_ACTIONS } from '../models/sqs_models'
 import { DynamoDbPermissions } from '../models/databases_models'
 import { LambdaConfig } from '../models/lambda_models'
-
+import { SQS_ACTIONS } from '../models/sqs_models'
 
 export const lambdaConfigs: LambdaConfig[] = [
   /*
@@ -77,10 +76,10 @@ export const lambdaConfigs: LambdaConfig[] = [
       ],
     },
     secrets: {
-      DYNAMO_MP4_TABLE_NAME: process.env.AWS_DYNAMO_DB_MP4_NAME as string,
-      DYNAMO_MP4_TABLE_ARN: process.env.AWS_DYNAMO_DB_MP4_ARN as string,
-      DYNAMO_MP3_TABLE_NAME: process.env.AWS_DYNAMO_DB_MP3_NAME as string,
       DYNAMO_MP3_TABLE_ARN: process.env.AWS_DYNAMO_DB_MP3_ARN as string,
+      DYNAMO_MP3_TABLE_NAME: process.env.AWS_DYNAMO_DB_MP3_NAME as string,
+      DYNAMO_MP4_TABLE_ARN: process.env.AWS_DYNAMO_DB_MP4_ARN as string,
+      DYNAMO_MP4_TABLE_NAME: process.env.AWS_DYNAMO_DB_MP4_NAME as string,
       S3_BUCKET_ARN: process.env.AWS_UPLOAD_BUCKET_ARN as string,
       S3_BUCKET_NAME: process.env.AWS_UPLOAD_BUCKET_NAME as string,
     },
@@ -90,8 +89,12 @@ export const lambdaConfigs: LambdaConfig[] = [
   /   FETCHING RELATED LAMBDAS
   */
   {
+    corsConfig: {
+      allowHeaders: ['*'],
+      allowMethods: [lambda.HttpMethod.POST],
+      allowOrigins: ['*'],
+    },
     name: 'Check-Processing-Status',
-    url: '/api/v1/capture/upload/status',
     path: './functions/check_processing_status/',
     policy: {
       actions: [
@@ -101,23 +104,19 @@ export const lambdaConfigs: LambdaConfig[] = [
       ],
       resources: [
         process.env.AWS_DYNAMO_DB_MP4_ARN as string,
-        process.env.AWS_DYNAMO_DB_MP3_ARN as string
+        process.env.AWS_DYNAMO_DB_MP3_ARN as string,
       ],
     },
-    corsConfig: {
-      allowHeaders: ['*'],
-      allowMethods: [lambda.HttpMethod.POST],
-      allowOrigins: ['*'],
-    },
     secrets: {
-      DYNAMO_MP4_TABLE_NAME: process.env.AWS_DYNAMO_DB_MP4_NAME as string,
-      DYNAMO_MP4_TABLE_ARN: process.env.AWS_DYNAMO_DB_MP4_ARN as string,
-      DYNAMO_MP3_TABLE_NAME: process.env.AWS_DYNAMO_DB_MP3_NAME as string,
       DYNAMO_MP3_TABLE_ARN: process.env.AWS_DYNAMO_DB_MP3_ARN as string,
+      DYNAMO_MP3_TABLE_NAME: process.env.AWS_DYNAMO_DB_MP3_NAME as string,
+      DYNAMO_MP4_TABLE_ARN: process.env.AWS_DYNAMO_DB_MP4_ARN as string,
+      DYNAMO_MP4_TABLE_NAME: process.env.AWS_DYNAMO_DB_MP4_NAME as string,
       OPEN_AI_KEY: process.env.OPEN_AI_KEY as string,
       S3_BUCKET_ARN: process.env.AWS_UPLOAD_BUCKET_ARN as string,
       S3_BUCKET_NAME: process.env.AWS_UPLOAD_BUCKET_NAME as string,
     },
+    url: '/api/v1/capture/upload/status',
   },
 ]
 
@@ -162,10 +161,10 @@ export const S3ToSQSConfig: LambdaConfig = {
     ],
   },
   secrets: {
-    DYNAMO_DB_MP4_ARN: process.env.AWS_DYNAMO_DB_MP4_ARN as string,
-    DYNAMO_DB_MP4_NAME: process.env.AWS_DYNAMO_DB_MP4_NAME as string,
     DYNAMO_DB_MP3_ARN: process.env.AWS_DYNAMO_DB_MP3_ARN as string,
     DYNAMO_DB_MP3_NAME: process.env.AWS_DYNAMO_DB_MP3_NAME as string,
+    DYNAMO_DB_MP4_ARN: process.env.AWS_DYNAMO_DB_MP4_ARN as string,
+    DYNAMO_DB_MP4_NAME: process.env.AWS_DYNAMO_DB_MP4_NAME as string,
     S3_BUCKET_ARN: process.env.AWS_UPLOAD_BUCKET_ARN as string,
     S3_BUCKET_NAME: process.env.AWS_UPLOAD_BUCKET_NAME as string,
     WHISPER_QUEUE_URL: process.env.AWS_SQS_WHISPER_QUEUE_URL as string,
@@ -193,19 +192,20 @@ export const SQSLambdaConfigs: LambdaConfig[] = [
       resources: [
         process.env.AWS_UPLOAD_BUCKET_ARN as string,
         process.env.AWS_DYNAMO_DB_MP4_ARN as string,
-        process.env.AWS_DYNAMO_DB_MP3_ARN as string
+        process.env.AWS_DYNAMO_DB_MP3_ARN as string,
       ],
     },
+    queue: 'WhisperQueue',
     secrets: {
-      DYNAMO_DB_MP4_ARN: process.env.AWS_DYNAMO_DB_MP4_ARN as string,
-      DYNAMO_DB_MP4_NAME: process.env.AWS_DYNAMO_DB_MP4_NAME as string,
+      AWS_SQS_SUMMARY_QUEUE_URL: process.env
+        .AWS_SQS_SUMMARY_QUEUE_URL as string,
       DYNAMO_DB_MP3_ARN: process.env.AWS_DYNAMO_DB_MP3_ARN as string,
       DYNAMO_DB_MP3_NAME: process.env.AWS_DYNAMO_DB_MP3_NAME as string,
+      DYNAMO_DB_MP4_ARN: process.env.AWS_DYNAMO_DB_MP4_ARN as string,
+      DYNAMO_DB_MP4_NAME: process.env.AWS_DYNAMO_DB_MP4_NAME as string,
       S3_BUCKET_ARN: process.env.AWS_UPLOAD_BUCKET_ARN as string,
       S3_BUCKET_NAME: process.env.AWS_UPLOAD_BUCKET_NAME as string,
-      AWS_SQS_SUMMARY_QUEUE_URL: process.env.AWS_SQS_SUMMARY_QUEUE_URL as string,
     },
-    queue: 'WhisperQueue',
   },
   {
     name: 'Video-Context-Analysis',
@@ -225,6 +225,7 @@ export const SQSLambdaConfigs: LambdaConfig[] = [
         process.env.AWS_DYNAMO_DB_MP4_ARN as string,
       ],
     },
+    queue: 'VideoContextQueue',
     secrets: {
       DYNAMO_DB_MP4_ARN: process.env.AWS_DYNAMO_DB_MP4_ARN as string,
       DYNAMO_DB_MP4_NAME: process.env.AWS_DYNAMO_DB_MP4_NAME as string,
@@ -232,7 +233,6 @@ export const SQSLambdaConfigs: LambdaConfig[] = [
       S3_BUCKET_ARN: process.env.AWS_UPLOAD_BUCKET_ARN as string,
       S3_BUCKET_NAME: process.env.AWS_UPLOAD_BUCKET_NAME as string,
     },
-    queue: 'VideoContextQueue',
   },
   {
     name: 'Generate-Memory-Summary',
@@ -250,18 +250,18 @@ export const SQSLambdaConfigs: LambdaConfig[] = [
       resources: [
         process.env.AWS_UPLOAD_BUCKET_ARN as string,
         process.env.AWS_DYNAMO_DB_MP4_ARN as string,
-        process.env.AWS_DYNAMO_DB_MP3_ARN as string
+        process.env.AWS_DYNAMO_DB_MP3_ARN as string,
       ],
     },
+    queue: 'SummaryQueue',
     secrets: {
-      DYNAMO_MP4_TABLE_NAME: process.env.AWS_DYNAMO_DB_MP4_NAME as string,
-      DYNAMO_MP4_TABLE_ARN: process.env.AWS_DYNAMO_DB_MP4_ARN as string,
-      DYNAMO_MP3_TABLE_NAME: process.env.AWS_DYNAMO_DB_MP3_NAME as string,
       DYNAMO_MP3_TABLE_ARN: process.env.AWS_DYNAMO_DB_MP3_ARN as string,
+      DYNAMO_MP3_TABLE_NAME: process.env.AWS_DYNAMO_DB_MP3_NAME as string,
+      DYNAMO_MP4_TABLE_ARN: process.env.AWS_DYNAMO_DB_MP4_ARN as string,
+      DYNAMO_MP4_TABLE_NAME: process.env.AWS_DYNAMO_DB_MP4_NAME as string,
       OPEN_AI_KEY: process.env.OPEN_AI_KEY as string,
       S3_BUCKET_ARN: process.env.AWS_UPLOAD_BUCKET_ARN as string,
       S3_BUCKET_NAME: process.env.AWS_UPLOAD_BUCKET_NAME as string,
     },
-    queue: 'SummaryQueue',
   },
 ]

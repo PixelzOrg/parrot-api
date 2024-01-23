@@ -1,10 +1,10 @@
 import * as cdk from 'aws-cdk-lib'
-import * as s3 from 'aws-cdk-lib/aws-s3'
 import * as lambda from 'aws-cdk-lib/aws-lambda'
+import * as s3 from 'aws-cdk-lib/aws-s3'
 import * as s3n from 'aws-cdk-lib/aws-s3-notifications'
+import { Construct } from 'constructs'
 
 import { S3ToSQSConfig } from '../config/lambda-config'
-import { Construct } from 'constructs'
 
 export class S3BucketStack extends cdk.Stack {
   public uploadBucket: s3.Bucket
@@ -36,11 +36,11 @@ export class S3BucketStack extends cdk.Stack {
         functionName: S3ToSQSConfig.name,
         timeout: cdk.Duration.seconds(10),
       }
-    );
+    )
     this.uploadBucket.addEventNotification(
       s3.EventType.OBJECT_CREATED,
       new s3n.LambdaDestination(eventLambda)
-    );
+    )
     if (S3ToSQSConfig.policy) {
       eventLambda.addToRolePolicy(
         new cdk.aws_iam.PolicyStatement({

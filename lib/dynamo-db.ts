@@ -15,25 +15,31 @@ export class DynamoDbStack extends cdk.Stack {
   private loadMp4Tables(stack: cdk.Stack): dynamodb.Table {
     const mp4Table = new dynamodb.Table(stack, 'createMp4Table', {
       billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
-      partitionKey: { 
-        name: 'file_uid', 
-        type: dynamodb.AttributeType.STRING 
+      partitionKey: {
+        name: 'file_uid',
+        type: dynamodb.AttributeType.STRING,
       },
       tableName: process.env.AWS_DYNAMO_DB_MP4_NAME as string,
     })
 
     mp4Table.addGlobalSecondaryIndex({
       indexName: 'transcriptionIndex',
-      partitionKey: { name: 'transcription', type: dynamodb.AttributeType.STRING }
-    });
+      partitionKey: {
+        name: 'transcription',
+        type: dynamodb.AttributeType.STRING,
+      },
+    })
     mp4Table.addGlobalSecondaryIndex({
       indexName: 'videoContextIndex',
-      partitionKey: { name: 'videoContext', type: dynamodb.AttributeType.STRING }
-    });
+      partitionKey: {
+        name: 'videoContext',
+        type: dynamodb.AttributeType.STRING,
+      },
+    })
     mp4Table.addGlobalSecondaryIndex({
       indexName: 'summaryIndex',
-      partitionKey: { name: 'summary', type: dynamodb.AttributeType.STRING }
-    });
+      partitionKey: { name: 'summary', type: dynamodb.AttributeType.STRING },
+    })
 
     return mp4Table
   }
@@ -41,21 +47,24 @@ export class DynamoDbStack extends cdk.Stack {
   private loadMp3Tables(stack: cdk.Stack): dynamodb.Table {
     const mp3Table = new dynamodb.Table(stack, 'createMp3Table', {
       billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
-      partitionKey: { 
-        name: 'file_uid', 
-        type: dynamodb.AttributeType.STRING 
+      partitionKey: {
+        name: 'file_uid',
+        type: dynamodb.AttributeType.STRING,
       },
       tableName: process.env.AWS_DYNAMO_DB_MP3_NAME as string,
     })
 
     mp3Table.addGlobalSecondaryIndex({
       indexName: 'transcriptionIndex',
-      partitionKey: { name: 'transcription', type: dynamodb.AttributeType.STRING }
-    });
+      partitionKey: {
+        name: 'transcription',
+        type: dynamodb.AttributeType.STRING,
+      },
+    })
     mp3Table.addGlobalSecondaryIndex({
       indexName: 'summaryIndex',
-      partitionKey: { name: 'summary', type: dynamodb.AttributeType.STRING }
-    });
+      partitionKey: { name: 'summary', type: dynamodb.AttributeType.STRING },
+    })
 
     return mp3Table
   }
