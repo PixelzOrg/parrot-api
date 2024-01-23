@@ -44,7 +44,7 @@ export class ApiGatewayStack extends cdk.Stack {
         code: lambda.DockerImageCode.fromImageAsset(AuthLambdaConfig.path),
         environment: AuthLambdaConfig.secrets,
         functionName: AuthLambdaConfig.name,
-        timeout: cdk.Duration.seconds(10),
+        timeout: cdk.Duration.minutes(1),
       }
     )
     return new apigateway.RequestAuthorizer(stack, 'parrot-token-authorizer', {

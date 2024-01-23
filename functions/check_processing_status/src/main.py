@@ -31,7 +31,7 @@ def handler(event, context):
         )
 
         if 'Items' in response and response['Items']:
-            item = response['Items'][0]
+            item = response['Items'][0] 
 
             # Check if summary exists
             if 'summary' in item and item['summary']:

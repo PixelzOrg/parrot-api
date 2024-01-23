@@ -1,43 +1,43 @@
-import json
 import os
-import uuid
-from utility import create_presigned_post
+import logging
+import json
+from openai import OpenAI
 
-
-BUCKET_NAME = os.environ.get('S3_BUCKET_NAME')
-BUCKET_ARN = os.environ.get('S3_BUCKET_ARN')
+# Configure OpenAI client
+client = OpenAI(
+    api_key=os.environ.get('OPEN_AI_KEY'),
+)
+logging.info("OpenAI client configured")
 
 def handler(event, context):
     try:
-        # Parse the JSON body
         body = json.loads(event['body'])
-        username = body['username']
-        
-        video_uuid = str(uuid.uuid4())
+        logging.info("Received event: %s", json.dumps(body, indent=2))
 
-        video_filename = f"{username}/{video_uuid}.mp4"
 
-        # Generate a presigned URL for the S3 upload
-        presigned_url = create_presigned_post(BUCKET_NAME, video_filename)
-    except Exception as e:
+    except (json.decoder.JSONDecodeError, KeyError, ValueError) as e:
+        logging.error("Error processing request: %s", e)
         return {
             'statusCode': 400,
-            'body': json.dumps(
-                {
-                    'message': 'Invalid request format',
-                    'error': str(e)
-                }
-            )
+            'body': json.dumps({'message': 'Invalid request', 'error': str(e)})
         }
 
-    return {
-        'statusCode': 200,
-        'body': json.dumps(
-            {
-                'message': 'Presigned URL generated successfully',
-                'expires': 3600,
-                'video_uuid': video_uuid,
-                'presigned_url': presigned_url
-            }
-        )
-    }
+    try:
+        logging.info("Sending prompt to OpenAI")
+        response = client.chat.completions.create(model="gpt-3.5-turbo",
+        messages=messages)
+        logging.info("Received response from OpenAI")
+
+        return {
+            'statusCode': 200,
+            'body': json.dumps({
+                'message': 'Chat generated successfully',
+                'chat': response.choices[0].message.content
+            })
+        }
+    except Exception as e:
+        logging.error("Error while calling OpenAI API: %s", e)
+        return {
+            'statusCode': 500,
+            'body': json.dumps({'message': 'Error in OpenAI API call', 'error': str(e)})
+        }

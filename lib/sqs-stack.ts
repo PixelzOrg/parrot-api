@@ -45,7 +45,7 @@ export class SqsStack extends cdk.Stack {
           code: lambda.DockerImageCode.fromImageAsset(config.path),
           environment: config.secrets,
           functionName: config.name,
-          timeout: cdk.Duration.seconds(10),
+          timeout: cdk.Duration.minutes(10),
         }
       );
       SQSLambda.addEventSource(

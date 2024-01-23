@@ -4,8 +4,6 @@ import json
 import openai
 from openai import OpenAI
 
-# Configure OpenAI client
-# Configure OpenAI client
 client = OpenAI(
     api_key=os.environ.get('OPEN_AI_KEY'),
 )
@@ -18,7 +16,6 @@ def handler(event, context):
         memory = body['memory']
         prompt = body['prompt']
 
-        # Formatting the memory for the chat context
         memory_context = (
             f"Title: {memory['title']}\n"
             f"Location: {memory['location']}\n"
@@ -28,10 +25,9 @@ def handler(event, context):
             f"Transcription: {memory['transcription']}"
         )
 
-        focus_instruction = "Please pay close attention to the details of the memory provided above, as the upcoming question relates closely to it."
+        focus_instruction = """Please pay close attention to the details of the memory
+        provided above, as the upcoming question relates closely to it."""
 
-        
-        # Create the chat history with the memory context as system messages
         messages = [
             {"role": "system", "content": memory_context},
             {"role": "system", "content": focus_instruction},
@@ -66,7 +62,3 @@ def handler(event, context):
             'statusCode': 500,
             'body': json.dumps({'message': 'Error in OpenAI API call', 'error': str(e)})
         }
-
-def is_valid_token(token):
-    # Placeholder for actual token validation logic
-    return True

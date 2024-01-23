@@ -7,6 +7,7 @@ import { SQS_ACTIONS } from '../models/sqs_models'
 import { DynamoDbPermissions } from '../models/databases_models'
 import { LambdaConfig } from '../models/lambda_models'
 
+
 export const lambdaConfigs: LambdaConfig[] = [
   /*
   /   CHAT RELATED LAMBDAS
@@ -173,7 +174,7 @@ export const S3ToSQSConfig: LambdaConfig = {
 }
 
 export const SQSLambdaConfigs: LambdaConfig[] = [
-    /*
+  /*
   /   PROCESSING RELATED LAMBDAS
   */
   {
@@ -182,6 +183,9 @@ export const SQSLambdaConfigs: LambdaConfig[] = [
     policy: {
       actions: [
         S3_ACTIONS.GET_OBJECT,
+        SQS_ACTIONS.SEND_MESSAGE,
+        SQS_ACTIONS.RECEIVE_MESSAGE,
+        SQS_ACTIONS.GET_QUEUE_ATTRIBUTES,
         DynamoDbPermissions.PUT,
         DynamoDbPermissions.GET,
         DynamoDbPermissions.QUERY,
@@ -209,6 +213,9 @@ export const SQSLambdaConfigs: LambdaConfig[] = [
     policy: {
       actions: [
         S3_ACTIONS.GET_OBJECT,
+        SQS_ACTIONS.SEND_MESSAGE,
+        SQS_ACTIONS.RECEIVE_MESSAGE,
+        SQS_ACTIONS.GET_QUEUE_ATTRIBUTES,
         DynamoDbPermissions.PUT,
         DynamoDbPermissions.GET,
         DynamoDbPermissions.QUERY,
@@ -233,6 +240,9 @@ export const SQSLambdaConfigs: LambdaConfig[] = [
     policy: {
       actions: [
         S3_ACTIONS.GET_OBJECT,
+        SQS_ACTIONS.SEND_MESSAGE,
+        SQS_ACTIONS.RECEIVE_MESSAGE,
+        SQS_ACTIONS.GET_QUEUE_ATTRIBUTES,
         DynamoDbPermissions.PUT,
         DynamoDbPermissions.GET,
         DynamoDbPermissions.QUERY,
