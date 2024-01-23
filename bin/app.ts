@@ -6,6 +6,7 @@ import { DynamoDbStack } from '../lib/dynamo-db'
 import { LambdaStack } from '../lib/lambda-stack'
 import { S3BucketStack } from '../lib/s3-stack'
 import { SqsStack } from '../lib/sqs-stack'
+import { Ec2Stack } from '../lib/ec2-stack'
 
 const app = new cdk.App()
 // Here we instantiate the stacks that we will be using
@@ -14,8 +15,9 @@ const app = new cdk.App()
 // 2. S3 Bucket Stack     (Cache/Database) (IN USE)
 // 3. API Gateway Stack   (Gateway) (IN USE)
 // 4. Lambda Stack        (API/Services) (IN USE)
-// 5. Cloudfront Stack    (Serving) (TODO:)
-// 6. Route53 Stack       (Domain) (TODO:)
+// 5. Ec2 Stack          (Services) (IN USE)
+// 6. Cloudfront Stack    (Serving) (TODO:)
+// 7. Route53 Stack       (Domain) (TODO:)
 
 const defaultAccount = process.env.CDK_DEFAULT_ACCOUNT as string
 const defaultRegion = process.env.CDK_DEFAULT_REGION as string
@@ -51,6 +53,18 @@ const s3BucketStack = new S3BucketStack(app, 'S3BucketStack', {
   },
 })
 console.log(`Started stack: ${s3BucketStack.stackName}`)
+
+
+// Instantiate the Ec2 Stack
+console.log("Starting Ec2 Stack...")
+const ec2Stack = new Ec2Stack(app, "Ec2Stack", {
+  env: {
+    account: defaultAccount,
+    region: defaultRegion,
+  },
+})
+console.log(`Started stack: ${ec2Stack.stackName}`)
+
 
 // Instantiate the API Gateway Stack
 console.log('Starting ApiGatewayStack...')
